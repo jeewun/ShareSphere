@@ -1,4 +1,4 @@
-# ShareSphere 🌐
+# ShareSphere 
 ### A Smart Resource-Sharing, Availability and Reservation Management System
 **Individual Web Programming Project · React + PHP + MySQL + Bootstrap**
 
@@ -57,81 +57,4 @@ categories (category_id, name, icon, description)
 resources (resource_id, owner_id, category_id, title, description, specifications, condition_status, location, image_url, rating, reviews_count, status, created_at)
 reservations (reservation_id, resource_id, user_id, start_date, end_date, purpose, status, decision_notes, created_at)
 notifications (notification_id, user_id, title, message, type, is_read, link, created_at)
-```
-
-> **MySQL Schema Script**: Available in `backend/database/sharesphere_mysql.sql`.
-> The backend also includes automatic SQLite fallback (`backend/database/sharesphere.sqlite`) with automatic table creation and data seeding.
-
----
-
-## 🔑 Pre-Seeded Demo Accounts
-
-| Role | Name | Email | Password | Access Level |
-|---|---|---|---|---|
-| **Student** | Alex Carter | `alex@example.com` | `password123` | Student Catalog, Bookings, Profile |
-| **Faculty / Owner** | John Doe | `john@example.com` | `password123` | Resource Listing, Approval Management |
-| **Lab Staff** | Sarah Kim | `sarah@example.com` | `password123` | Lab Equipment & Bookings |
-| **Administrator** | System Admin | `admin@sharesphere.edu` | `admin123` | Full Analytics & Administrative Reports |
-
----
-
-## 🏃 Quick Start Guide
-
-### 1. Prerequisites
-- **Node.js** (v18+)
-- **PHP** (v8.0+)
-- **MySQL** (optional — SQLite runs out-of-the-box)
-
-### 2. Start Backend (PHP REST API)
-From the root directory:
-```bash
-php -S 127.0.0.1:8080 -t backend
-```
-Test health check at: `http://127.0.0.1:8080/index.php`
-
-### 3. Start Frontend (React + Vite)
-In a separate terminal:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Open your browser at: `http://localhost:5173`
-
----
-
-## 📂 Project Structure
-```
-ShareSphere/
-├── backend/
-│   ├── api/
-│   │   ├── analytics.php        # Admin metrics & utilization reports (Role: admin only)
-│   │   ├── auth.php             # Login, register, profile, role validation
-│   │   ├── categories.php       # Category listings
-│   │   ├── helpers.php          # Conflict algorithm & JSON response utilities
-│   │   ├── notifications.php    # User notifications
-│   │   ├── reservations.php     # Booking requests, conflict checking, status workflow
-│   │   ├── resources.php        # Resource catalog, filtering, alternatives
-│   │   └── upload.php           # File upload handling
-│   ├── config/
-│   │   ├── cors.php             # CORS headers
-│   │   └── db.php               # PDO database connection (MySQL + SQLite fallback)
-│   ├── database/
-│   │   ├── seed_data.php        # Initial test fixtures matching syllabus demo
-│   │   ├── sharesphere.sqlite   # Pre-seeded SQLite database
-│   │   └── sharesphere_mysql.sql# Full MySQL database dump with relational constraints
-│   └── index.php                # API Gateway & health check
-├── frontend/
-│   ├── src/
-│   │   ├── components/          # Reusable UI widgets (Calendar, Charts, Badges, Navbar)
-│   │   ├── context/             # AuthContext & role session management
-│   │   ├── pages/               # Module pages (Login, Register, Catalog, Details, Admin)
-│   │   ├── services/            # API client service layer
-│   │   ├── App.jsx              # Main routing with AdminGuard
-│   │   ├── index.css            # Custom design system & Bootstrap integration
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js           # Vite config with /api proxy
-├── .gitignore
-└── README.md
 ```
