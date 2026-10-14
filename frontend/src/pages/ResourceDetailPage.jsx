@@ -171,78 +171,80 @@ export default function ResourceDetailPage() {
       </div>
 
       {/* 2-Column Layout: Left = Resource & Owner Details; Right = Select Period (Top) + Structured Calendar (Bottom) */}
-      <div className="row g-4 mb-3">
+      <div className="row g-4 mb-4">
         {/* Left Column: Resource Details & Owner Info */}
         <div className="col-12 col-lg-5 col-xl-5">
-          <div className="card-clean p-4 h-100 d-flex flex-column justify-content-between">
-            <div>
-              {/* Image (Structured & Well-Proportioned) */}
-              <div className="rounded-3 overflow-hidden mb-3 bg-light border text-center position-relative" style={{ height: '220px' }}>
-                <img
-                  src={resource.image_url}
-                  alt={resource.title}
-                  className="w-100 h-100"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
+          <div className="card-clean p-4">
+            {/* Image (Structured & Well-Proportioned) */}
+            <div className="rounded-3 overflow-hidden mb-3.5 bg-light border text-center position-relative" style={{ height: '220px' }}>
+              <img
+                src={resource.image_url}
+                alt={resource.title}
+                className="w-100 h-100"
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
 
-              {/* Category & Status */}
-              <div className="d-flex align-items-center justify-content-between mb-2.5">
-                <span className="badge-category">
-                  {resource.category_name || 'General'}
-                </span>
-                <span className={isAvailable ? 'badge-available' : 'badge-rejected'}>
-                  {isAvailable ? 'Available' : 'Reserved'}
-                </span>
-              </div>
+            {/* Category & Status */}
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <span className="badge-category">
+                {resource.category_name || 'General'}
+              </span>
+              <span className={isAvailable ? 'badge-available' : 'badge-rejected'}>
+                {isAvailable ? 'Available' : 'Reserved'}
+              </span>
+            </div>
 
-              {/* Title */}
-              <h4 className="fw-bold text-dark mb-1.5" style={{ fontSize: '1.25rem' }}>
-                {resource.title}
-              </h4>
+            {/* Title */}
+            <h4 className="fw-bold text-dark mb-2" style={{ fontSize: '1.3rem' }}>
+              {resource.title}
+            </h4>
 
-              {/* Description */}
-              <p className="text-secondary small mb-3" style={{ lineHeight: '1.55', fontSize: '0.84rem' }}>
-                {resource.description}
-              </p>
+            {/* Description */}
+            <p className="text-secondary small mb-3.5" style={{ lineHeight: '1.6', fontSize: '0.86rem' }}>
+              {resource.description}
+            </p>
 
-              {/* Specs & Attributes */}
-              <div className="row g-2 mb-3 bg-light p-2.5 rounded-3 border" style={{ fontSize: '0.82rem' }}>
-                <div className="col-6">
-                  <span className="text-muted d-block small mb-0.5">Condition</span>
-                  <span className="fw-semibold text-dark d-flex align-items-center gap-1.5">
-                    <Shield size={14} className="text-success" />
-                    {resource.condition_status || 'Good'}
-                  </span>
+            {/* Specs & Attributes */}
+            <div className="row g-3 mb-3.5 bg-light p-3 rounded-3 border">
+              <div className="col-6">
+                <div className="text-muted text-uppercase fw-semibold mb-1.5" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
+                  Condition
                 </div>
-                <div className="col-6">
-                  <span className="text-muted d-block small mb-0.5">Location</span>
-                  <span className="fw-semibold text-dark d-flex align-items-center gap-1.5 text-truncate">
-                    <MapPin size={14} className="text-secondary" />
-                    {resource.location}
-                  </span>
+                <div className="fw-semibold text-dark d-flex align-items-center gap-2" style={{ fontSize: '0.86rem' }}>
+                  <Shield size={15} className="text-success flex-shrink-0" />
+                  <span>{resource.condition_status || 'Good'}</span>
+                </div>
+              </div>
+              <div className="col-6 border-start ps-3">
+                <div className="text-muted text-uppercase fw-semibold mb-1.5" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
+                  Location
+                </div>
+                <div className="fw-semibold text-dark d-flex align-items-center gap-2 text-truncate" style={{ fontSize: '0.86rem' }}>
+                  <MapPin size={15} className="text-secondary flex-shrink-0" />
+                  <span className="text-truncate">{resource.location}</span>
                 </div>
               </div>
             </div>
 
             {/* Details about the Owner */}
-            <div className="p-3 rounded-3 bg-white border mt-2">
-              <div className="text-muted text-uppercase fw-bold mb-2" style={{ fontSize: '0.68rem', letterSpacing: '0.06em' }}>
+            <div className="p-3.5 rounded-3 bg-white border">
+              <div className="text-muted text-uppercase fw-bold mb-2.5" style={{ fontSize: '0.68rem', letterSpacing: '0.08em' }}>
                 Resource Owner Details
               </div>
-              <div className="d-flex align-items-center gap-2.5">
+              <div className="d-flex align-items-center gap-3">
                 <div 
                   className="rounded-circle bg-light border d-flex align-items-center justify-content-center text-dark fw-bold flex-shrink-0"
-                  style={{ width: '38px', height: '38px', fontSize: '0.85rem' }}
+                  style={{ width: '42px', height: '42px', fontSize: '0.9rem' }}
                 >
-                  {resource.owner_name ? resource.owner_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : <User size={16} />}
+                  {resource.owner_name ? resource.owner_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : <User size={18} />}
                 </div>
                 <div className="flex-grow-1 overflow-hidden">
-                  <div className="fw-semibold text-dark small d-flex align-items-center gap-1.5" style={{ fontSize: '0.85rem' }}>
+                  <div className="fw-semibold text-dark d-flex align-items-center gap-2 mb-1" style={{ fontSize: '0.88rem' }}>
                     <span className="text-truncate">{resource.owner_name}</span>
-                    {isOwner && <span className="badge bg-secondary text-white py-0.5 px-1.5" style={{ fontSize: '0.65rem' }}>You</span>}
+                    {isOwner && <span className="badge bg-secondary text-white py-0.5 px-2" style={{ fontSize: '0.65rem' }}>You</span>}
                   </div>
-                  <div className="text-muted text-truncate" style={{ fontSize: '0.76rem' }}>
+                  <div className="text-muted text-truncate" style={{ fontSize: '0.78rem' }}>
                     {resource.owner_email || 'Campus Member'}
                   </div>
                 </div>
@@ -252,102 +254,102 @@ export default function ResourceDetailPage() {
         </div>
 
         {/* Right Column: Top = Select Reservation Period, Bottom = Calendar & Order List */}
-        <div className="col-12 col-lg-7 col-xl-7 d-flex flex-column gap-3">
+        <div className="col-12 col-lg-7 col-xl-7 d-flex flex-column gap-4">
           {/* Top Box: Select Reservation Period / Manage Listed Item */}
-          <div className="card-clean p-3.5 px-4">
+          <div className="card-clean p-4">
             {isOwner ? (
               <div>
-                <div className="d-flex align-items-center gap-2 mb-2.5 border-bottom pb-2">
-                  <Shield className="text-primary" size={17} />
-                  <span className="fw-bold text-dark" style={{ fontSize: '0.94rem' }}>Your Listed Resource</span>
+                <div className="d-flex align-items-center gap-2 mb-3 pb-2.5 border-bottom">
+                  <Shield className="text-primary me-1" size={18} />
+                  <span className="fw-bold text-dark" style={{ fontSize: '0.98rem' }}>Your Listed Resource</span>
                 </div>
                 
-                <div className="p-2.5 bg-light rounded-3 border mb-3">
-                  <div className="d-flex align-items-center gap-1.5 text-dark fw-semibold small mb-0.5">
-                    <Info size={15} />
+                <div className="p-3 bg-light rounded-3 border mb-3.5">
+                  <div className="d-flex align-items-center gap-2 text-dark fw-semibold small mb-1.5">
+                    <Info size={16} className="text-primary" />
                     <span>You own this equipment</span>
                   </div>
-                  <p className="text-muted small mb-0" style={{ lineHeight: '1.45', fontSize: '0.8rem' }}>
+                  <p className="text-muted small mb-0" style={{ lineHeight: '1.55', fontSize: '0.82rem' }}>
                     Fellow students and campus members can request reservations for this item.
                   </p>
                 </div>
 
-                <div className="d-flex gap-2">
-                  <Link to="/my-resources" className="btn btn-primary btn-sm flex-grow-1 py-2 fw-semibold" style={{ fontSize: '0.82rem' }}>
+                <div className="d-flex gap-2.5">
+                  <Link to="/my-resources" className="btn btn-primary btn-sm flex-grow-1 py-2 px-3 fw-semibold" style={{ fontSize: '0.84rem' }}>
                     Manage in My Listed Items
                   </Link>
-                  <Link to="/bookings?tab=owner_requests" className="btn btn-outline-secondary btn-sm flex-grow-1 py-2 fw-semibold" style={{ fontSize: '0.82rem' }}>
+                  <Link to="/bookings?tab=owner_requests" className="btn btn-outline-secondary btn-sm flex-grow-1 py-2 px-3 fw-semibold" style={{ fontSize: '0.84rem' }}>
                     View Incoming Requests
                   </Link>
                 </div>
               </div>
             ) : (
               <div>
-                <div className="d-flex align-items-center justify-content-between mb-2.5 border-bottom pb-2">
-                  <div className="d-flex align-items-center gap-2">
-                    <Clock className="text-dark" size={17} />
-                    <span className="fw-bold text-dark" style={{ fontSize: '0.94rem' }}>Select Reservation Period</span>
+                <div className="d-flex align-items-center justify-content-between mb-3.5 pb-3 border-bottom flex-wrap gap-2">
+                  <div className="d-flex align-items-center">
+                    <Clock className="text-dark me-2" size={18} />
+                    <span className="fw-bold text-dark" style={{ fontSize: '0.98rem' }}>Select Reservation Period</span>
                   </div>
-                  <span className="text-muted small" style={{ fontSize: '0.74rem' }}>
+                  <span className="text-muted" style={{ fontSize: '0.78rem' }}>
                     Pick dates below or click on calendar
                   </span>
                 </div>
 
                 {/* Reservation Form */}
                 <form onSubmit={handleBookingSubmit} id="reservation-request-form">
-                  <div className="row g-2.5 mb-2.5">
+                  <div className="row g-3 mb-3.5">
                     <div className="col-sm-6">
-                      <label className="form-label small fw-semibold text-secondary mb-1" style={{ fontSize: '0.76rem' }}>
+                      <label className="form-label small fw-semibold text-secondary mb-1.5" style={{ fontSize: '0.8rem' }}>
                         Start Date
                       </label>
                       <input
                         id="reservation-start-date"
                         type="date"
-                        className="form-control form-control-sm rounded-3 py-1.5"
+                        className="form-control rounded-3 py-2 px-3"
                         value={dateRange.startDate}
                         min={new Date().toISOString().split('T')[0]}
                         onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
                         required
-                        style={{ fontSize: '0.84rem' }}
+                        style={{ fontSize: '0.85rem' }}
                       />
                     </div>
                     <div className="col-sm-6">
-                      <label className="form-label small fw-semibold text-secondary mb-1" style={{ fontSize: '0.76rem' }}>
+                      <label className="form-label small fw-semibold text-secondary mb-1.5" style={{ fontSize: '0.8rem' }}>
                         End Date
                       </label>
                       <input
                         id="reservation-end-date"
                         type="date"
-                        className="form-control form-control-sm rounded-3 py-1.5"
+                        className="form-control rounded-3 py-2 px-3"
                         value={dateRange.endDate}
                         min={dateRange.startDate || new Date().toISOString().split('T')[0]}
                         onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
                         required
-                        style={{ fontSize: '0.84rem' }}
+                        style={{ fontSize: '0.85rem' }}
                       />
                     </div>
                   </div>
 
                   {/* Purpose Input */}
-                  <div className="mb-2.5">
-                    <label className="form-label small fw-semibold text-secondary mb-1" style={{ fontSize: '0.76rem' }}>
+                  <div className="mb-3.5">
+                    <label className="form-label small fw-semibold text-secondary mb-1.5" style={{ fontSize: '0.8rem' }}>
                       Reservation Purpose / Project Topic
                     </label>
                     <textarea
                       id="reservation-purpose-textarea"
                       rows="2"
-                      className="form-control form-control-sm rounded-3 py-1.5"
+                      className="form-control rounded-3 py-2 px-3"
                       placeholder="E.g., IoT seminar, robotics contest, lab experiment..."
                       value={purpose}
                       onChange={(e) => setPurpose(e.target.value)}
                       required
-                      style={{ fontSize: '0.84rem', minHeight: '46px', resize: 'vertical' }}
+                      style={{ fontSize: '0.85rem', minHeight: '52px', lineHeight: '1.5', resize: 'vertical' }}
                     ></textarea>
                   </div>
 
                   {/* Conflict Status Banner */}
                   {dateRange.startDate && dateRange.endDate && (
-                    <div className="mb-2.5">
+                    <div className="mb-3.5">
                       <ConflictBadge
                         checking={checkingConflict}
                         conflictData={conflictData}
@@ -358,14 +360,14 @@ export default function ResourceDetailPage() {
 
                   {/* Feedback Messages */}
                   {bookingSuccess && (
-                    <div className="alert alert-success d-flex align-items-center gap-2 py-2 mb-2.5">
-                      <CheckCircle size={15} />
+                    <div className="alert alert-success d-flex align-items-center gap-2 py-2 px-3 mb-3.5">
+                      <CheckCircle size={16} />
                       <span className="small">{bookingSuccess}</span>
                     </div>
                   )}
                   {bookingError && (
-                    <div className="alert alert-danger d-flex align-items-center gap-2 py-2 mb-2.5">
-                      <AlertCircle size={15} />
+                    <div className="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3.5">
+                      <AlertCircle size={16} />
                       <span className="small">{bookingError}</span>
                     </div>
                   )}
@@ -374,15 +376,15 @@ export default function ResourceDetailPage() {
                   <button
                     type="submit"
                     id="request-reservation-btn"
-                    className="btn btn-blue btn-sm w-100 py-2 d-flex align-items-center justify-content-center gap-2 shadow-sm fw-semibold"
+                    className="btn btn-blue w-100 py-2.5 px-4 d-flex align-items-center justify-content-center gap-2 shadow-sm fw-semibold"
                     disabled={submitting || checkingConflict || conflictData?.has_conflict}
-                    style={{ fontSize: '0.86rem' }}
+                    style={{ fontSize: '0.88rem' }}
                   >
                     {submitting ? (
                       <div className="spinner-border spinner-border-sm" role="status"></div>
                     ) : (
                       <>
-                        <CheckCircle size={16} />
+                        <CheckCircle size={17} />
                         <span>Request Reservation</span>
                       </>
                     )}

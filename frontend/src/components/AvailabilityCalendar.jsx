@@ -107,34 +107,34 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
   return (
     <div className="card-clean p-4" id="availability-calendar-card">
       {/* Header: Month & Navigation */}
-      <div className="d-flex align-items-center justify-content-between mb-3.5 pb-2.5 border-bottom flex-wrap gap-2">
-        <div className="d-flex align-items-center gap-2">
-          <CalendarIcon className="text-primary" size={18} />
-          <h6 className="fw-bold text-dark mb-0" style={{ fontSize: '0.96rem' }}>
+      <div className="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom flex-wrap gap-3">
+        <div className="d-flex align-items-center">
+          <CalendarIcon className="text-primary me-2.5" size={20} />
+          <h6 className="fw-bold text-dark mb-0" style={{ fontSize: '1rem', letterSpacing: '0.01em' }}>
             Availability Calendar
           </h6>
         </div>
-        <div className="d-flex align-items-center gap-1.5">
+        <div className="d-flex align-items-center gap-2">
           <button 
             type="button"
-            className="btn btn-sm btn-outline-secondary p-0 px-2 rounded-2" 
+            className="btn btn-sm btn-outline-secondary p-0 rounded-2 d-flex align-items-center justify-content-center" 
             onClick={prevMonth} 
             aria-label="Previous month" 
             title="Previous Month"
-            style={{ height: '28px', lineHeight: '1' }}
+            style={{ width: '30px', height: '30px' }}
           >
             <ChevronLeft size={16} />
           </button>
-          <span className="fw-semibold px-2 small text-dark" style={{ minWidth: '115px', textAlign: 'center', fontSize: '0.85rem' }}>
+          <span className="fw-semibold px-2 text-dark" style={{ minWidth: '135px', textAlign: 'center', fontSize: '0.88rem' }}>
             {monthNames[month]} {year}
           </span>
           <button 
             type="button"
-            className="btn btn-sm btn-outline-secondary p-0 px-2 rounded-2" 
+            className="btn btn-sm btn-outline-secondary p-0 rounded-2 d-flex align-items-center justify-content-center" 
             onClick={nextMonth} 
             aria-label="Next month" 
             title="Next Month"
-            style={{ height: '28px', lineHeight: '1' }}
+            style={{ width: '30px', height: '30px' }}
           >
             <ChevronRight size={16} />
           </button>
@@ -142,10 +142,10 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
       </div>
 
       {/* Structured Split: Calendar Grid on Left, Order List on Right */}
-      <div className="row g-3">
+      <div className="row g-4">
         {/* Left: Monthly Calendar */}
-        <div className="col-12 col-md-7">
-          <div className="calendar-grid mb-2.5">
+        <div className="col-12 col-md-7 pe-md-2">
+          <div className="calendar-grid mb-3">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
               <div key={d} className="calendar-header-day">
                 {d}
@@ -178,69 +178,69 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
 
           {/* Calendar Legend */}
           <div 
-            className="d-flex align-items-center justify-content-center gap-3 pt-2 border-top flex-wrap" 
-            style={{ fontSize: '0.74rem' }}
+            className="d-flex align-items-center justify-content-center gap-4 pt-3 mt-3 border-top flex-wrap" 
+            style={{ fontSize: '0.78rem' }}
           >
-            <div className="d-flex align-items-center gap-1.5">
-              <span className="rounded-circle border" style={{ width: '8px', height: '8px', backgroundColor: '#fff', borderColor: '#94a3b8' }}></span>
-              <span className="text-secondary">Available</span>
+            <div className="d-flex align-items-center">
+              <span className="rounded-circle border me-2" style={{ width: '9px', height: '9px', backgroundColor: '#fff', borderColor: '#94a3b8' }}></span>
+              <span className="text-secondary fw-medium">Available</span>
             </div>
-            <div className="d-flex align-items-center gap-1.5">
-              <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: '#ef4444' }}></span>
-              <span className="text-secondary">Reserved</span>
+            <div className="d-flex align-items-center">
+              <span className="rounded-circle me-2" style={{ width: '9px', height: '9px', backgroundColor: '#ef4444' }}></span>
+              <span className="text-secondary fw-medium">Reserved</span>
             </div>
-            <div className="d-flex align-items-center gap-1.5">
-              <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: '#f59e0b' }}></span>
-              <span className="text-secondary">Pending</span>
+            <div className="d-flex align-items-center">
+              <span className="rounded-circle me-2" style={{ width: '9px', height: '9px', backgroundColor: '#f59e0b' }}></span>
+              <span className="text-secondary fw-medium">Pending</span>
             </div>
-            <div className="d-flex align-items-center gap-1.5">
-              <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: '#2563eb' }}></span>
-              <span className="text-secondary">Selected</span>
+            <div className="d-flex align-items-center">
+              <span className="rounded-circle me-2" style={{ width: '9px', height: '9px', backgroundColor: '#2563eb' }}></span>
+              <span className="text-secondary fw-medium">Selected</span>
             </div>
           </div>
         </div>
 
         {/* Right: Order List / Bookings */}
-        <div className="col-12 col-md-5">
-          <div className="bg-light p-3 rounded-3 border h-100 d-flex flex-column" style={{ minHeight: '250px' }}>
-            <div className="d-flex align-items-center justify-content-between mb-2.5 pb-2 border-bottom">
-              <div className="d-flex align-items-center gap-1.5">
-                <Clock size={15} className="text-primary" />
-                <span className="fw-bold text-dark small">Order List</span>
+        <div className="col-12 col-md-5 ps-md-2">
+          <div className="bg-light p-3.5 rounded-3 border h-100 d-flex flex-column" style={{ minHeight: '270px' }}>
+            <div className="d-flex align-items-center justify-content-between mb-3 pb-2.5 border-bottom">
+              <div className="d-flex align-items-center">
+                <Clock size={16} className="text-primary me-2" />
+                <span className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>Order List</span>
               </div>
-              <span className="badge bg-white text-secondary border fw-medium" style={{ fontSize: '0.68rem', padding: '3px 7px' }}>
+              <span className="badge bg-white text-secondary border fw-medium px-2 py-1" style={{ fontSize: '0.72rem' }}>
                 {bookings.length} {bookings.length === 1 ? 'Order' : 'Orders'}
               </span>
             </div>
 
             {bookings.length === 0 ? (
-              <div className="text-center text-muted small my-auto py-4">
-                <CheckCircle2 size={24} className="text-secondary opacity-40 mb-1.5 mx-auto" />
-                <div className="fw-semibold text-dark small">No Active Orders</div>
-                <div className="text-muted" style={{ fontSize: '0.74rem' }}>
+              <div className="text-center text-muted my-auto py-4">
+                <CheckCircle2 size={30} className="text-secondary opacity-40 mb-2.5 mx-auto d-block" />
+                <div className="fw-semibold text-dark mb-1.5" style={{ fontSize: '0.9rem' }}>No Active Orders</div>
+                <div className="text-muted" style={{ fontSize: '0.78rem', lineHeight: '1.5' }}>
                   All slots are currently open to reserve.
                 </div>
               </div>
             ) : (
-              <div className="d-flex flex-column gap-2 overflow-auto pe-1" style={{ maxHeight: '235px' }}>
+              <div className="d-flex flex-column gap-2.5 overflow-auto pe-1" style={{ maxHeight: '250px' }}>
                 {bookings.map((b) => (
-                  <div key={b.reservation_id} className="p-2.5 bg-white rounded-3 border shadow-xs">
-                    <div className="d-flex align-items-center justify-content-between mb-1">
-                      <span className="fw-bold text-dark small d-flex align-items-center gap-1" style={{ fontSize: '0.78rem' }}>
-                        <CalendarIcon size={12} className="text-secondary" />
-                        {formatHumanDate(b.start_date)} → {formatHumanDate(b.end_date)}
+                  <div key={b.reservation_id} className="p-3 bg-white rounded-3 border shadow-xs">
+                    <div className="d-flex align-items-center justify-content-between mb-1.5">
+                      <span className="fw-bold text-dark d-flex align-items-center" style={{ fontSize: '0.82rem' }}>
+                        <CalendarIcon size={13} className="text-secondary me-1.5" />
+                        <span>{formatHumanDate(b.start_date)} → {formatHumanDate(b.end_date)}</span>
                       </span>
-                      <span className={b.status === 'approved' ? 'badge-approved' : 'badge-pending'} style={{ fontSize: '0.65rem', padding: '2px 7px' }}>
+                      <span className={b.status === 'approved' ? 'badge-approved' : 'badge-pending'} style={{ fontSize: '0.68rem', padding: '3px 8px' }}>
                         {b.status === 'approved' ? 'Confirmed' : 'Pending'}
                       </span>
                     </div>
-                    <div className="d-flex align-items-center justify-content-between text-muted" style={{ fontSize: '0.72rem' }}>
-                      <span className="d-flex align-items-center gap-1 text-truncate">
-                        <User size={11} />
-                        {b.user_name || 'Campus Student'}
+                    <div className="d-flex align-items-center justify-content-between text-muted mt-1.5" style={{ fontSize: '0.76rem' }}>
+                      <span className="d-flex align-items-center text-truncate">
+                        <User size={13} className="text-secondary me-1.5" />
+                        <span>{b.user_name || 'Campus Student'}</span>
                       </span>
                       {b.purpose && (
-                        <span className="text-truncate ms-2 text-secondary" style={{ maxWidth: '100px' }} title={b.purpose}>
+                        <span className="text-truncate ms-2 text-secondary fst-italic" style={{ maxWidth: '115px' }} title={b.purpose}>
                           {b.purpose}
                         </span>
                       )}

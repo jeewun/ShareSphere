@@ -507,25 +507,26 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 6px;
 }
 
 .calendar-header-day {
   text-align: center;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   font-weight: 600;
   color: #64748b;
-  padding: 4px 0;
+  padding: 6px 0 8px 0;
+  letter-spacing: 0.02em;
 }
 
 .calendar-cell {
-  height: 34px;
-  min-height: 34px;
+  height: 36px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  font-size: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   border: 1px solid transparent;
