@@ -202,11 +202,11 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
 
         {/* Right: Order List / Bookings */}
         <div className="col-12 col-md-5 ps-md-2">
-          <div className="bg-light p-3.5 rounded-3 border h-100 d-flex flex-column" style={{ minHeight: '270px' }}>
-            <div className="d-flex align-items-center justify-content-between mb-3 pb-2.5 border-bottom">
+          <div className="bg-light p-3 rounded-3 border h-100 d-flex flex-column" style={{ minHeight: '260px' }}>
+            <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
               <div className="d-flex align-items-center">
                 <Clock size={16} className="text-primary me-2" />
-                <span className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>Order List</span>
+                <span className="fw-bold text-dark" style={{ fontSize: '0.88rem' }}>Order List</span>
               </div>
               <span className="badge bg-white text-secondary border fw-medium px-2 py-1" style={{ fontSize: '0.72rem' }}>
                 {bookings.length} {bookings.length === 1 ? 'Order' : 'Orders'}

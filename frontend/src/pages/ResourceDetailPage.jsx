@@ -176,7 +176,7 @@ export default function ResourceDetailPage() {
         <div className="col-12 col-lg-5 col-xl-5">
           <div className="card-clean p-4">
             {/* Image (Structured & Well-Proportioned) */}
-            <div className="rounded-3 overflow-hidden mb-3.5 bg-light border text-center position-relative" style={{ height: '220px' }}>
+            <div className="rounded-3 overflow-hidden mb-3 bg-light border text-center position-relative" style={{ height: '220px' }}>
               <img
                 src={resource.image_url}
                 alt={resource.title}
@@ -186,7 +186,7 @@ export default function ResourceDetailPage() {
             </div>
 
             {/* Category & Status */}
-            <div className="d-flex align-items-center justify-content-between mb-3">
+            <div className="d-flex align-items-center justify-content-between mb-2.5">
               <span className="badge-category">
                 {resource.category_name || 'General'}
               </span>
@@ -201,14 +201,14 @@ export default function ResourceDetailPage() {
             </h4>
 
             {/* Description */}
-            <p className="text-secondary small mb-3.5" style={{ lineHeight: '1.6', fontSize: '0.86rem' }}>
+            <p className="text-secondary small mb-3" style={{ lineHeight: '1.6', fontSize: '0.86rem' }}>
               {resource.description}
             </p>
 
             {/* Specs & Attributes */}
-            <div className="row g-3 mb-3.5 bg-light p-3 rounded-3 border">
-              <div className="col-6">
-                <div className="text-muted text-uppercase fw-semibold mb-1.5" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
+            <div className="row g-3 mb-3 bg-light p-3 rounded-3 border mx-0">
+              <div className="col-6 ps-1">
+                <div className="text-muted text-uppercase fw-semibold mb-1" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
                   Condition
                 </div>
                 <div className="fw-semibold text-dark d-flex align-items-center gap-2" style={{ fontSize: '0.86rem' }}>
@@ -217,7 +217,7 @@ export default function ResourceDetailPage() {
                 </div>
               </div>
               <div className="col-6 border-start ps-3">
-                <div className="text-muted text-uppercase fw-semibold mb-1.5" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
+                <div className="text-muted text-uppercase fw-semibold mb-1" style={{ fontSize: '0.68rem', letterSpacing: '0.05em' }}>
                   Location
                 </div>
                 <div className="fw-semibold text-dark d-flex align-items-center gap-2 text-truncate" style={{ fontSize: '0.86rem' }}>
@@ -228,8 +228,8 @@ export default function ResourceDetailPage() {
             </div>
 
             {/* Details about the Owner */}
-            <div className="p-3.5 rounded-3 bg-white border">
-              <div className="text-muted text-uppercase fw-bold mb-2.5" style={{ fontSize: '0.68rem', letterSpacing: '0.08em' }}>
+            <div className="p-3 rounded-3 bg-white border">
+              <div className="text-muted text-uppercase fw-bold mb-2" style={{ fontSize: '0.68rem', letterSpacing: '0.08em' }}>
                 Resource Owner Details
               </div>
               <div className="d-flex align-items-center gap-3">
@@ -264,7 +264,7 @@ export default function ResourceDetailPage() {
                   <span className="fw-bold text-dark" style={{ fontSize: '0.98rem' }}>Your Listed Resource</span>
                 </div>
                 
-                <div className="p-3 bg-light rounded-3 border mb-3.5">
+                <div className="p-3 bg-light rounded-3 border mb-3">
                   <div className="d-flex align-items-center gap-2 text-dark fw-semibold small mb-1.5">
                     <Info size={16} className="text-primary" />
                     <span>You own this equipment</span>
@@ -274,7 +274,8 @@ export default function ResourceDetailPage() {
                   </p>
                 </div>
 
-                <div className="d-flex gap-2.5">
+                {/* Owner Actions with Clean Gap */}
+                <div className="d-flex gap-3">
                   <Link to="/my-resources" className="btn btn-primary btn-sm flex-grow-1 py-2 px-3 fw-semibold" style={{ fontSize: '0.84rem' }}>
                     Manage in My Listed Items
                   </Link>
@@ -285,7 +286,7 @@ export default function ResourceDetailPage() {
               </div>
             ) : (
               <div>
-                <div className="d-flex align-items-center justify-content-between mb-3.5 pb-3 border-bottom flex-wrap gap-2">
+                <div className="d-flex align-items-center justify-content-between mb-3 pb-2.5 border-bottom flex-wrap gap-2">
                   <div className="d-flex align-items-center">
                     <Clock className="text-dark me-2" size={18} />
                     <span className="fw-bold text-dark" style={{ fontSize: '0.98rem' }}>Select Reservation Period</span>
@@ -297,7 +298,7 @@ export default function ResourceDetailPage() {
 
                 {/* Reservation Form */}
                 <form onSubmit={handleBookingSubmit} id="reservation-request-form">
-                  <div className="row g-3 mb-3.5">
+                  <div className="row g-3 mb-3">
                     <div className="col-sm-6">
                       <label className="form-label small fw-semibold text-secondary mb-1.5" style={{ fontSize: '0.8rem' }}>
                         Start Date
@@ -331,7 +332,7 @@ export default function ResourceDetailPage() {
                   </div>
 
                   {/* Purpose Input */}
-                  <div className="mb-3.5">
+                  <div className="mb-3">
                     <label className="form-label small fw-semibold text-secondary mb-1.5" style={{ fontSize: '0.8rem' }}>
                       Reservation Purpose / Project Topic
                     </label>
@@ -349,7 +350,7 @@ export default function ResourceDetailPage() {
 
                   {/* Conflict Status Banner */}
                   {dateRange.startDate && dateRange.endDate && (
-                    <div className="mb-3.5">
+                    <div className="mb-3">
                       <ConflictBadge
                         checking={checkingConflict}
                         conflictData={conflictData}
@@ -360,35 +361,37 @@ export default function ResourceDetailPage() {
 
                   {/* Feedback Messages */}
                   {bookingSuccess && (
-                    <div className="alert alert-success d-flex align-items-center gap-2 py-2 px-3 mb-3.5">
+                    <div className="alert alert-success d-flex align-items-center gap-2 py-2 px-3 mb-3">
                       <CheckCircle size={16} />
                       <span className="small">{bookingSuccess}</span>
                     </div>
                   )}
                   {bookingError && (
-                    <div className="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3.5">
+                    <div className="alert alert-danger d-flex align-items-center gap-2 py-2 px-3 mb-3">
                       <AlertCircle size={16} />
                       <span className="small">{bookingError}</span>
                     </div>
                   )}
 
                   {/* Submit Button */}
-                  <button
-                    type="submit"
-                    id="request-reservation-btn"
-                    className="btn btn-blue w-100 py-2.5 px-4 d-flex align-items-center justify-content-center gap-2 shadow-sm fw-semibold"
-                    disabled={submitting || checkingConflict || conflictData?.has_conflict}
-                    style={{ fontSize: '0.88rem' }}
-                  >
-                    {submitting ? (
-                      <div className="spinner-border spinner-border-sm" role="status"></div>
-                    ) : (
-                      <>
-                        <CheckCircle size={17} />
-                        <span>Request Reservation</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="pt-1">
+                    <button
+                      type="submit"
+                      id="request-reservation-btn"
+                      className="btn btn-blue w-100 py-2.5 px-4 d-flex align-items-center justify-content-center gap-2 shadow-sm fw-semibold"
+                      disabled={submitting || checkingConflict || conflictData?.has_conflict}
+                      style={{ fontSize: '0.88rem' }}
+                    >
+                      {submitting ? (
+                        <div className="spinner-border spinner-border-sm" role="status"></div>
+                      ) : (
+                        <>
+                          <CheckCircle size={17} />
+                          <span>Request Reservation</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </form>
               </div>
             )}

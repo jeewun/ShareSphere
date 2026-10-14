@@ -662,6 +662,18 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   padding: 3px !important;
 }
 
+/* Fractional Spacing Utilities */
+.gap-2\.5 { gap: 0.75rem !important; }
+.gap-3\.5 { gap: 1.25rem !important; }
+.mb-1\.5 { margin-bottom: 0.375rem !important; }
+.mb-2\.5 { margin-bottom: 0.75rem !important; }
+.mb-3\.5 { margin-bottom: 1.25rem !important; }
+.pb-2\.5 { padding-bottom: 0.625rem !important; }
+.p-3\.5 { padding: 1.25rem !important; }
+.py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
+.py-2\.5 { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+
+
 /* =====================================================================
    BOOTSTRAP BUTTONS & OVERRIDES
    ===================================================================== */
