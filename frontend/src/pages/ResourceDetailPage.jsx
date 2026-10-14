@@ -1,5 +1,5 @@
 // frontend/src/pages/ResourceDetailPage.jsx
-// Implements Module 3: Reservation and Conflict Prevention (Image 3 Screen 3, 6, 7)
+// Implements Module 3: Reservation and Conflict Prevention
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
@@ -8,7 +8,7 @@ import ConflictBadge from '../components/ConflictBadge';
 import AvailabilityCalendar from '../components/AvailabilityCalendar';
 import AlternativeSuggestions from '../components/AlternativeSuggestions';
 import { 
-  MapPin, Star, Shield, User, ArrowLeft, Calendar, 
+  MapPin, Shield, User, ArrowLeft, 
   Clock, CheckCircle, AlertCircle, Info, Sparkles 
 } from 'lucide-react';
 
@@ -21,13 +21,12 @@ export default function ResourceDetailPage() {
   const [existingBookings, setExistingBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Reservation selection state (Defaults to Oct 15 - Oct 17 to match mockup)
-  const currentYear = new Date().getFullYear();
+  // Initial reservation selection state: clean & empty (No false conflict on load!)
   const [dateRange, setDateRange] = useState({
-    startDate: `${currentYear}-10-15`,
-    endDate: `${currentYear}-10-17`
+    startDate: '',
+    endDate: ''
   });
-  const [purpose, setPurpose] = useState('Academic project presentation and documentation');
+  const [purpose, setPurpose] = useState('');
 
   // Conflict state
   const [checkingConflict, setCheckingConflict] = useState(false);
@@ -35,8 +34,6 @@ export default function ResourceDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [bookingError, setBookingError] = useState(null);
-
-  const calendarSectionRef = useRef(null);
 
   // Load resource details
   useEffect(() => {
@@ -59,7 +56,7 @@ export default function ResourceDetailPage() {
     loadResource();
   }, [id]);
 
-  // Live Conflict Detection Pre-Flight Check (Module 3 & Standout Feature)
+  // Live Conflict Detection Pre-Flight Check (Runs only when user picks both dates)
   useEffect(() => {
     if (!id || !dateRange.startDate || !dateRange.endDate) {
       setConflictData(null);
@@ -103,6 +100,11 @@ export default function ResourceDetailPage() {
       return;
     }
 
+    if (user && resource && Number(user.user_id) === Number(resource.owner_id)) {
+      setBookingError('You cannot reserve a resource that you own.');
+      return;
+    }
+
     if (conflictData?.has_conflict) {
       setBookingError('Cannot reserve: Please resolve scheduling conflict first.');
       return;
@@ -137,10 +139,6 @@ export default function ResourceDetailPage() {
     }
   };
 
-  const scrollToCalendar = () => {
-    calendarSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -159,6 +157,9 @@ export default function ResourceDetailPage() {
     );
   }
 
+  const isOwner = Boolean(user && resource && Number(user.user_id) === Number(resource.owner_id));
+  const isAvailable = resource.status === 'available';
+
   return (
     <div>
       {/* Breadcrumb / Back button */}
@@ -169,214 +170,247 @@ export default function ResourceDetailPage() {
         </Link>
       </div>
 
-      {/* Main Reservation Card (Image 3 Screen 3) */}
-      <div className="row g-4 mb-4">
-        {/* Left Column: Resource Details & Image */}
-        <div className="col-lg-6">
-          <div className="card-clean p-4 h-100">
-            <div className="rounded-3 overflow-hidden mb-3 bg-light" style={{ maxHeight: '380px' }}>
+      {/* 2-Column Layout: Left = Resource & Owner Details; Right = Select Period (Top) + Calendar (Bottom) */}
+      <div className="row g-3 mb-3">
+        {/* Left Column: Resource Details & Owner Info */}
+        <div className="col-12 col-lg-5 col-xl-5">
+          <div className="card-clean p-3">
+            {/* Image (Clean & Compact) */}
+            <div className="rounded-3 overflow-hidden mb-2 bg-light border text-center" style={{ maxHeight: '185px' }}>
               <img
                 src={resource.image_url}
                 alt={resource.title}
                 className="w-100 h-100"
-                style={{ objectFit: 'cover', maxHeight: '380px' }}
+                style={{ objectFit: 'contain', maxHeight: '185px' }}
               />
             </div>
 
+            {/* Category & Status */}
             <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="badge-category fs-6 px-3 py-1">
-                {resource.category_name}
+              <span className="badge-category">
+                {resource.category_name || 'General'}
               </span>
-              <div className="d-flex align-items-center gap-1 text-warning">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    fill={i < Math.floor(resource.rating) ? 'currentColor' : 'none'}
-                    stroke="currentColor"
-                  />
-                ))}
-                <span className="small text-muted fw-bold ms-1">
-                  ({resource.reviews_count} reviews)
-                </span>
-              </div>
+              <span className={isAvailable ? 'badge-available' : 'badge-rejected'}>
+                {isAvailable ? 'Available' : 'Reserved'}
+              </span>
             </div>
 
-            <h3 className="fw-bold text-dark mb-2">{resource.title}</h3>
+            {/* Title (No ratings / reviews) */}
+            <h5 className="fw-bold text-dark mb-1" style={{ fontSize: '1.15rem' }}>
+              {resource.title}
+            </h5>
 
-            <p className="text-muted small mb-4" style={{ lineHeight: '1.6' }}>
+            {/* Description */}
+            <p className="text-secondary small mb-2 text-truncate-2" style={{ lineHeight: '1.45', fontSize: '0.82rem' }}>
               {resource.description}
             </p>
 
             {/* Specs & Attributes */}
-            <div className="row g-2 mb-4 bg-light p-3 rounded-3 border">
-              <div className="col-sm-4">
-                <span className="text-muted small d-block">Condition</span>
-                <span className="fw-bold small text-dark d-flex align-items-center gap-1">
-                  <Shield size={14} className="text-success" />
-                  {resource.condition_status}
+            <div className="row g-2 mb-2 bg-light p-2 rounded-3 border" style={{ fontSize: '0.78rem' }}>
+              <div className="col-6">
+                <span className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Condition</span>
+                <span className="fw-semibold text-dark d-flex align-items-center gap-1">
+                  <Shield size={12} className="text-success" />
+                  {resource.condition_status || 'Good'}
                 </span>
               </div>
-              <div className="col-sm-4">
-                <span className="text-muted small d-block">Location</span>
-                <span className="fw-bold small text-dark d-flex align-items-center gap-1 text-truncate">
-                  <MapPin size={14} className="text-primary" />
+              <div className="col-6">
+                <span className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Location</span>
+                <span className="fw-semibold text-dark d-flex align-items-center gap-1 text-truncate">
+                  <MapPin size={12} className="text-secondary" />
                   {resource.location}
                 </span>
               </div>
-              <div className="col-sm-4">
-                <span className="text-muted small d-block">Resource Owner</span>
-                <span className="fw-bold small text-dark d-flex align-items-center gap-1">
-                  <User size={14} className="text-info" />
-                  {resource.owner_name}
-                </span>
-              </div>
             </div>
 
-            {resource.specifications && (
-              <div>
-                <h6 className="fw-bold text-secondary small text-uppercase mb-2">Technical Specifications</h6>
-                <div className="small text-muted p-2 rounded bg-white border">
-                  {resource.specifications}
+            {/* Details about the Owner */}
+            <div className="p-2.5 rounded-3 bg-white border">
+              <div className="text-muted text-uppercase fw-bold mb-1" style={{ fontSize: '0.65rem', letterSpacing: '0.06em' }}>
+                Resource Owner Details
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <div 
+                  className="rounded-circle bg-light border d-flex align-items-center justify-content-center text-dark fw-bold flex-shrink-0"
+                  style={{ width: '32px', height: '32px', fontSize: '0.78rem' }}
+                >
+                  {resource.owner_name ? resource.owner_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : <User size={14} />}
                 </div>
+                <div className="flex-grow-1 overflow-hidden">
+                  <div className="fw-semibold text-dark small d-flex align-items-center gap-1" style={{ fontSize: '0.82rem' }}>
+                    <span className="text-truncate">{resource.owner_name}</span>
+                    {isOwner && <span className="badge bg-secondary text-white py-0 px-1" style={{ fontSize: '0.62rem' }}>You</span>}
+                  </div>
+                  <div className="text-muted text-truncate" style={{ fontSize: '0.72rem' }}>
+                    {resource.owner_email || 'Campus Member'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Top = Select Reservation Period, Bottom = Calendar */}
+        <div className="col-12 col-lg-7 col-xl-7 d-flex flex-column gap-2">
+          {/* Top Box: Select Reservation Period (Compact & Clean) */}
+          <div className="card-clean p-2.5 px-3">
+            {isOwner ? (
+              <div>
+                <div className="d-flex align-items-center gap-1.5 mb-2 border-bottom pb-1.5">
+                  <Shield className="text-primary" size={16} />
+                  <span className="fw-bold text-dark small">Your Listed Resource</span>
+                </div>
+                
+                <div className="p-2 bg-light rounded-3 border mb-2">
+                  <div className="d-flex align-items-center gap-1.5 text-dark fw-semibold small mb-0.5" style={{ fontSize: '0.78rem' }}>
+                    <Info size={14} />
+                    <span>You own this equipment</span>
+                  </div>
+                  <p className="text-muted small mb-0" style={{ lineHeight: '1.4', fontSize: '0.76rem' }}>
+                    Fellow students and campus members can request reservations for this item.
+                  </p>
+                </div>
+
+                <div className="d-flex gap-2">
+                  <Link to="/my-resources" className="btn btn-primary btn-sm flex-grow-1 py-1.5 fw-semibold" style={{ fontSize: '0.8rem' }}>
+                    Manage in My Listed Items
+                  </Link>
+                  <Link to="/bookings?tab=owner_requests" className="btn btn-outline-secondary btn-sm flex-grow-1 py-1.5" style={{ fontSize: '0.8rem' }}>
+                    View Incoming Requests
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="d-flex align-items-center justify-content-between mb-2 border-bottom pb-1.5">
+                  <div className="d-flex align-items-center gap-1.5">
+                    <Clock className="text-dark" size={16} />
+                    <span className="fw-bold text-dark small">Select Reservation Period</span>
+                  </div>
+                  <span className="text-muted small" style={{ fontSize: '0.72rem' }}>
+                    Pick dates below or click calendar
+                  </span>
+                </div>
+
+                {/* Reservation Form */}
+                <form onSubmit={handleBookingSubmit} id="reservation-request-form">
+                  <div className="row g-2 mb-2">
+                    <div className="col-sm-6">
+                      <label className="form-label small fw-semibold text-secondary mb-0.5" style={{ fontSize: '0.74rem' }}>
+                        Start Date
+                      </label>
+                      <input
+                        id="reservation-start-date"
+                        type="date"
+                        className="form-control form-control-sm rounded-3 py-1"
+                        value={dateRange.startDate}
+                        min={new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
+                        required
+                        style={{ fontSize: '0.82rem' }}
+                      />
+                    </div>
+                    <div className="col-sm-6">
+                      <label className="form-label small fw-semibold text-secondary mb-0.5" style={{ fontSize: '0.74rem' }}>
+                        End Date
+                      </label>
+                      <input
+                        id="reservation-end-date"
+                        type="date"
+                        className="form-control form-control-sm rounded-3 py-1"
+                        value={dateRange.endDate}
+                        min={dateRange.startDate || new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
+                        required
+                        style={{ fontSize: '0.82rem' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Purpose Input */}
+                  <div className="mb-2">
+                    <label className="form-label small fw-semibold text-secondary mb-0.5" style={{ fontSize: '0.74rem' }}>
+                      Reservation Purpose / Project Topic
+                    </label>
+                    <textarea
+                      id="reservation-purpose-textarea"
+                      rows="1"
+                      className="form-control form-control-sm rounded-3 py-1"
+                      placeholder="E.g., IoT seminar, robotics contest, lab experiment..."
+                      value={purpose}
+                      onChange={(e) => setPurpose(e.target.value)}
+                      required
+                      style={{ fontSize: '0.82rem', minHeight: '34px', resize: 'none' }}
+                    ></textarea>
+                  </div>
+
+                  {/* Conflict Status Banner */}
+                  {dateRange.startDate && dateRange.endDate && (
+                    <div className="mb-2">
+                      <ConflictBadge
+                        checking={checkingConflict}
+                        conflictData={conflictData}
+                        selectedRange={dateRange}
+                      />
+                    </div>
+                  )}
+
+                  {/* Feedback Messages */}
+                  {bookingSuccess && (
+                    <div className="alert alert-success d-flex align-items-center gap-2 py-1.5 mb-2">
+                      <CheckCircle size={15} />
+                      <span className="small">{bookingSuccess}</span>
+                    </div>
+                  )}
+                  {bookingError && (
+                    <div className="alert alert-danger d-flex align-items-center gap-2 py-1.5 mb-2">
+                      <AlertCircle size={15} />
+                      <span className="small">{bookingError}</span>
+                    </div>
+                  )}
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    id="request-reservation-btn"
+                    className="btn btn-blue btn-sm w-100 py-1.5 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                    disabled={submitting || checkingConflict || conflictData?.has_conflict}
+                    style={{ fontSize: '0.84rem' }}
+                  >
+                    {submitting ? (
+                      <div className="spinner-border spinner-border-sm" role="status"></div>
+                    ) : (
+                      <>
+                        <CheckCircle size={15} />
+                        <span>Request Reservation</span>
+                      </>
+                    )}
+                  </button>
+                </form>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Right Column: Date Selection & Conflict Prevention (Image 3 Screen 3) */}
-        <div className="col-lg-6">
-          <div className="card-clean p-4 h-100 d-flex flex-column justify-content-between">
-            <div>
-              <div className="d-flex align-items-center gap-2 mb-3 border-bottom pb-3">
-                <Clock className="text-primary" size={22} />
-                <h5 className="fw-bold mb-0">Select Reservation Period</h5>
-              </div>
+          {/* Alternative suggestions if conflict occurs */}
+          {conflictData?.has_conflict && conflictData?.alternatives?.length > 0 && (
+            <AlternativeSuggestions
+              resource={resource}
+              selectedRange={dateRange}
+              alternatives={conflictData.alternatives}
+              onOpenCalendar={() => {}}
+            />
+          )}
 
-              {/* Form Controls (Unit-II DOM Form Controls, validation) */}
-              <form onSubmit={handleBookingSubmit} id="reservation-request-form">
-                <div className="row g-3 mb-3">
-                  <div className="col-sm-6">
-                    <label className="form-label small fw-semibold text-secondary">Start Date</label>
-                    <input
-                      id="reservation-start-date"
-                      type="date"
-                      className="form-control rounded-3"
-                      value={dateRange.startDate}
-                      min={new Date().toISOString().split('T')[0]}
-                      onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="col-sm-6">
-                    <label className="form-label small fw-semibold text-secondary">End Date</label>
-                    <input
-                      id="reservation-end-date"
-                      type="date"
-                      className="form-control rounded-3"
-                      value={dateRange.endDate}
-                      min={dateRange.startDate || new Date().toISOString().split('T')[0]}
-                      onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Purpose Textarea Control (Unit-II Textarea Controls) */}
-                <div className="mb-4">
-                  <label className="form-label small fw-semibold text-secondary">
-                    Reservation Purpose / Project Topic
-                  </label>
-                  <textarea
-                    id="reservation-purpose-textarea"
-                    rows="2"
-                    className="form-control rounded-3"
-                    placeholder="E.g., IoT seminar presentation, robotics contest, robotics demo..."
-                    value={purpose}
-                    onChange={(e) => setPurpose(e.target.value)}
-                    required
-                  ></textarea>
-                </div>
-
-                {/* Conflict Status Banner (Green if free, Red if conflict) */}
-                <div className="mb-4">
-                  <ConflictBadge
-                    checking={checkingConflict}
-                    conflictData={conflictData}
-                    selectedRange={dateRange}
-                  />
-                </div>
-
-                {/* Success / Error Messages */}
-                {bookingSuccess && (
-                  <div className="alert alert-success d-flex align-items-center gap-2 py-2 mb-3">
-                    <CheckCircle size={18} />
-                    <span className="small">{bookingSuccess}</span>
-                  </div>
-                )}
-                {bookingError && (
-                  <div className="alert alert-danger d-flex align-items-center gap-2 py-2 mb-3">
-                    <AlertCircle size={18} />
-                    <span className="small">{bookingError}</span>
-                  </div>
-                )}
-
-                {/* Submit CTA */}
-                <button
-                  type="submit"
-                  id="request-reservation-btn"
-                  className="btn btn-brand-primary w-100 py-2 fs-6 d-flex align-items-center justify-content-center gap-2 shadow"
-                  disabled={submitting || checkingConflict || conflictData?.has_conflict}
-                >
-                  {submitting ? (
-                    <div className="spinner-border spinner-border-sm" role="status"></div>
-                  ) : (
-                    <>
-                      <CheckCircle size={18} />
-                      <span>Request Reservation</span>
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-
-            {/* Quick Helper Links */}
-            <div className="pt-3 border-top mt-4 d-flex align-items-center justify-content-between text-muted small">
-              <span className="d-flex align-items-center gap-1">
-                <Info size={14} /> Confirmed by faculty/owner
-              </span>
-              <button
-                type="button"
-                onClick={scrollToCalendar}
-                className="btn btn-link text-primary text-decoration-none p-0 small fw-semibold"
-              >
-                View monthly calendar slots ↓
-              </button>
-            </div>
-          </div>
+          {/* Bottom Box: Availability Calendar (Compact) */}
+          <AvailabilityCalendar
+            bookings={existingBookings}
+            selectedRange={dateRange}
+            onSelectDateRange={(newRange) => {
+              setDateRange(newRange);
+            }}
+            compact={true}
+          />
         </div>
       </div>
-
-      {/* Standout Feature 1: Intelligent Alternative Suggestions (Image 3 Screen 7) */}
-      {conflictData?.has_conflict && conflictData?.alternatives?.length > 0 && (
-        <AlternativeSuggestions
-          resource={resource}
-          selectedRange={dateRange}
-          alternatives={conflictData.alternatives}
-          onOpenCalendar={scrollToCalendar}
-        />
-      )}
-
-      {/* Standout Feature 2: Visual Availability Calendar (Image 3 Screen 6) */}
-      <section ref={calendarSectionRef} className="mt-4">
-        <AvailabilityCalendar
-          bookings={existingBookings}
-          selectedRange={dateRange}
-          onSelectDateRange={(newRange) => {
-            setDateRange(newRange);
-          }}
-        />
-      </section>
     </div>
   );
 }

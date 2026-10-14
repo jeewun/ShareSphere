@@ -73,7 +73,7 @@ if ($method === 'GET') {
         sendError('Unauthorized', 401);
     }
 
-    $type = $_GET['type'] ?? 'my_bookings'; // 'my_bookings', 'owner_requests', or 'all' (admin)
+    $type = $_GET['type'] ?? 'my_bookings'; // 'my_bookings' or 'owner_requests'
     $statusFilter = $_GET['status'] ?? 'all';
 
     $params = [];
@@ -86,16 +86,6 @@ if ($method === 'GET') {
                 JOIN users u ON res.user_id = u.user_id
                 WHERE r.owner_id = ?";
         $params[] = $user['user_id'];
-    } elseif ($type === 'all' && $user['role'] === 'admin') {
-        $sql = "SELECT res.*, r.title as resource_title, r.image_url as resource_image, c.name as category_name, 
-                       u.name as requester_name, u.email as requester_email,
-                       owner.name as owner_name
-                FROM reservations res
-                JOIN resources r ON res.resource_id = r.resource_id
-                JOIN categories c ON r.category_id = c.category_id
-                JOIN users u ON res.user_id = u.user_id
-                JOIN users owner ON r.owner_id = owner.user_id
-                WHERE 1=1";
     } else {
         // My Bookings
         $sql = "SELECT res.*, r.title as resource_title, r.image_url as resource_image, r.location, c.name as category_name, 
@@ -155,6 +145,11 @@ if ($method === 'POST') {
         sendError('Resource not found', 404);
     }
 
+    // Disallow self-reservation
+    if ($resource['owner_id'] == $user['user_id']) {
+        sendError('You cannot reserve a resource that you own.', 400);
+    }
+
     // STRICT SERVER-SIDE CONFLICT PREVENTION (Module 3 & Requirement 4)
     // Check for approved or pending bookings overlapping with [startDate, endDate]
     $conflicts = checkBookingConflicts($pdo, $resourceId, $startDate, $endDate);
@@ -178,12 +173,12 @@ if ($method === 'POST') {
         // Send notification to resource owner
         $notifOwner = $pdo->prepare("INSERT INTO notifications (user_id, title, message, type, link) VALUES (?, ?, ?, ?, ?)");
         $ownerMsg = "User {$user['name']} requested '{$resource['title']}' from {$startDate} to {$endDate}.";
-        $notifOwner->execute([$resource['owner_id'], 'New Reservation Request', $ownerMsg, 'info', '/bookings']);
+        $notifOwner->execute([$resource['owner_id'], 'New Reservation Request', $ownerMsg, 'info', '/bookings?tab=owner_requests']);
 
         // Send confirmation notification to requester
         $notifUser = $pdo->prepare("INSERT INTO notifications (user_id, title, message, type, link) VALUES (?, ?, ?, ?, ?)");
         $userMsg = "Your booking request for '{$resource['title']}' ({$startDate} to {$endDate}) has been submitted.";
-        $notifUser->execute([$user['user_id'], 'Reservation Submitted', $userMsg, 'info', '/bookings']);
+        $notifUser->execute([$user['user_id'], 'Reservation Submitted', $userMsg, 'info', '/bookings?tab=my_bookings']);
 
         $pdo->commit();
 
@@ -230,18 +225,17 @@ if ($method === 'PUT') {
         sendError('Reservation not found', 404);
     }
 
-    // Permission checks
+    // Permission checks: strictly peer-to-peer
     $isOwner = ($reservation['owner_id'] == $user['user_id']);
     $isRequester = ($reservation['user_id'] == $user['user_id']);
-    $isAdmin = ($user['role'] === 'admin');
 
     if ($newStatus === 'cancelled') {
-        if (!$isRequester && !$isAdmin && !$isOwner) {
+        if (!$isRequester && !$isOwner) {
             sendError('Forbidden: You can only cancel your own bookings', 403);
         }
     } else {
-        if (!$isOwner && !$isAdmin) {
-            sendError('Forbidden: Only resource owner or admin can change this status', 403);
+        if (!$isOwner) {
+            sendError('Forbidden: Only resource owner can change this status', 403);
         }
     }
 
@@ -263,7 +257,7 @@ if ($method === 'PUT') {
     $notifMsg = "Your booking for {$reservation['resource_title']} has been {$newStatus}. " . ($notes ? "Notes: {$notes}" : '');
 
     $notif = $pdo->prepare("INSERT INTO notifications (user_id, title, message, type, link) VALUES (?, ?, ?, ?, ?)");
-    $notif->execute([$reservation['user_id'], $notifTitle, $notifMsg, $notifType, '/bookings']);
+    $notif->execute([$reservation['user_id'], $notifTitle, $notifMsg, $notifType, '/bookings?tab=my_bookings']);
 
     sendResponse(['message' => "Reservation status changed to {$newStatus}", 'status' => $newStatus]);
 }

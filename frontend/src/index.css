@@ -2,27 +2,35 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
-  --nav-navy: #0e2744;
-  --nav-navy-dark: #091a2f;
-  --nav-border: rgba(255, 255, 255, 0.08);
+  /* Refined Light Shades Theme */
+  --nav-navy: #f1f3f5;
+  --nav-navy-dark: #e9ecef;
+  --nav-border: #e2e8f0;
 
-  --sidebar-navy: #0e2744;
-  --sidebar-hover: rgba(255, 255, 255, 0.07);
-  --sidebar-active: #2563eb;
+  --sidebar-navy: #f8fafc;
+  --sidebar-hover: #f1f5f9;
+  --sidebar-active: #ffffff;
+  --sidebar-active-text: #0f172a;
 
-  --primary-blue: #2563eb;
-  --primary-blue-hover: #1d4ed8;
+  --primary-slate: #18181b;
+  --primary-slate-hover: #27272a;
 
   --bg-page: #f8fafc;
   --bg-card: #ffffff;
   --border-light: #e2e8f0;
+  --border-subtle: #cbd5e1;
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-muted: #64748b;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+
+  --bs-primary: #18181b;
+  --bs-primary-rgb: 24, 24, 27;
+  --bs-link-color: #18181b;
+  --bs-link-hover-color: #09090b;
 }
 
 * {
@@ -59,7 +67,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 /* =====================================================================
-   TOP APP HEADER (Matches Image 3 Header)
+   TOP APP HEADER (Light Shade of Grey)
    ===================================================================== */
 .top-header {
   background-color: var(--nav-navy);
@@ -71,7 +79,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .brand-icon {
-  background: #2563eb;
+  background: #18181b;
   color: #ffffff;
   width: 36px;
   height: 36px;
@@ -79,7 +87,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .header-search-box {
@@ -112,21 +120,33 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .user-pill {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid var(--border-light);
   border-radius: 30px;
   padding: 4px 12px 4px 6px;
-  color: #ffffff;
+  color: #1e293b;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .user-pill:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.header-bell-btn {
+  color: #64748b !important;
+  transition: all 0.15s ease;
+}
+
+.header-bell-btn:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
 }
 
 /* =====================================================================
-   APP LAYOUT & SIDEBAR (Matches Image 3 Left Navigation)
+   APP LAYOUT & SIDEBAR (Even Lighter Shade of Grey)
    ===================================================================== */
 .app-container {
   display: flex;
@@ -152,7 +172,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #64748b;
+  color: #94a3b8;
   padding: 0 0.85rem;
   margin-bottom: 0.65rem;
 }
@@ -161,11 +181,11 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
-  color: #cbd5e1;
+  padding: 9px 14px;
+  color: #64748b;
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   border-radius: 8px;
   margin-bottom: 4px;
   transition: all 0.15s ease;
@@ -173,14 +193,15 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 
 .sidebar-nav-item:hover {
   background-color: var(--sidebar-hover);
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .sidebar-nav-item.active {
-  background-color: var(--sidebar-active);
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #0f172a;
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
 }
 
 .main-content {
@@ -216,14 +237,48 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .brand-badge {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #27272a 0%, #18181b 100%);
   color: #ffffff;
-  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Brand Logo Component Styles */
+.brand-logo-link {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-logo-auth-link {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: transparent;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-logo-auth-link:hover {
+  transform: translateY(-2px);
+}
+
+.brand-logo-auth-link:hover .brand-logo-img {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.brand-logo-nav-link {
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-logo-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
 }
 
 .btn-brand-primary {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: #18181b;
+  border-color: #18181b;
   color: #ffffff;
   font-weight: 600;
   border-radius: 8px;
@@ -231,10 +286,10 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .btn-brand-primary:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  background: #27272a;
+  border-color: #27272a;
   color: #ffffff;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 .resource-card {
@@ -252,12 +307,12 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 .resource-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
-  border-color: #93c5fd;
+  border-color: #a1a1aa;
 }
 
 .resource-card .img-box {
   width: 100%;
-  height: 180px;
+  height: 145px;
   position: relative;
   background-color: #f1f5f9;
   overflow: hidden;
@@ -275,12 +330,12 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 /* =====================================================================
-   BADGES & BUTTONS (Matches Image 3 Pills)
+   BADGES & BUTTONS
    ===================================================================== */
 .badge-category {
-  background-color: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #dbeafe;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
   font-weight: 600;
   font-size: 0.72rem;
   padding: 3px 8px;
@@ -288,11 +343,11 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .badge-available {
-  background-color: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #a7f3d0 !important;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   padding: 3px 10px;
   border-radius: 20px;
   display: inline-flex;
@@ -304,15 +359,15 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   content: "";
   width: 6px;
   height: 6px;
-  background-color: #10b981;
+  background-color: #10b981 !important;
   border-radius: 50%;
   display: inline-block;
 }
 
 .badge-pending {
-  background-color: #fffbeb;
-  color: #b45309;
-  border: 1px solid #fde68a;
+  background-color: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #e4e4e7;
   font-weight: 600;
   font-size: 0.75rem;
   padding: 3px 10px;
@@ -323,9 +378,9 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .badge-approved {
-  background-color: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
+  background-color: #18181b;
+  color: #ffffff;
+  border: 1px solid #18181b;
   font-weight: 600;
   font-size: 0.75rem;
   padding: 3px 10px;
@@ -336,8 +391,8 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .badge-rejected {
-  background-color: #fef2f2;
-  color: #b91c1c;
+  background-color: #fee2e2;
+  color: #991b1b;
   border: 1px solid #fecaca;
   font-weight: 600;
   font-size: 0.75rem;
@@ -349,9 +404,9 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .badge-cancelled {
-  background-color: #f1f5f9;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background-color: #f4f4f5;
+  color: #71717a;
+  border: 1px solid #e4e4e7;
   font-weight: 600;
   font-size: 0.75rem;
   padding: 3px 10px;
@@ -359,25 +414,72 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .btn-blue {
-  background-color: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #ffffff !important;
   font-weight: 600;
   border-radius: 8px;
-  padding: 7px 16px;
+  padding: 8px 16px;
   font-size: 0.88rem;
   transition: all 0.15s ease;
 }
 
 .btn-blue:hover {
-  background-color: #1d4ed8;
-  border-color: #1d4ed8;
-  color: #ffffff;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.28);
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-hero-primary {
+  background: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  color: #090a0f !important;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.18);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-hero-primary:hover {
+  background: #f4f4f5 !important;
+  border-color: #f4f4f5 !important;
+  color: #090a0f !important;
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.btn-hero-secondary {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-hero-secondary:hover,
+.btn-hero-secondary:focus {
+  background: #ffffff !important;
+  color: #090a0f !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-hero-secondary:active {
+  transform: translateY(0);
 }
 
 /* =====================================================================
-   ADMIN STAT CARDS (Matches Image 3 Screen 5)
+   OVERVIEW STAT CARDS
    ===================================================================== */
 .stat-card-clean {
   background: #ffffff;
@@ -400,7 +502,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 /* =====================================================================
-   CALENDAR (Matches Image 3 Screen 6)
+   CALENDAR (Standard & Compact Grid)
    ===================================================================== */
 .calendar-grid {
   display: grid;
@@ -416,6 +518,23 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   padding: 6px 0;
 }
 
+/* Compact Calendar Grid: Sits cleanly in right bottom space without scrolling */
+.calendar-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.calendar-grid-compact .calendar-header-day {
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 2px 0;
+}
+
 .calendar-cell {
   aspect-ratio: 1;
   display: flex;
@@ -429,6 +548,17 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   transition: all 0.15s ease;
 }
 
+.calendar-grid-compact .calendar-cell {
+  aspect-ratio: auto;
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0;
+}
+
 .calendar-cell.available {
   background-color: #ffffff;
   border-color: #e2e8f0;
@@ -436,39 +566,169 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .calendar-cell.available:hover {
-  border-color: #2563eb;
-  background-color: #eff6ff;
-  color: #2563eb;
+  border-color: #94a3b8;
+  background-color: #f8fafc;
 }
 
 .calendar-cell.reserved {
-  background-color: #fee2e2;
-  color: #b91c1c;
-  border-color: #fca5a5;
-  cursor: not-allowed;
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  border-color: #fca5a5 !important;
+  cursor: not-allowed !important;
 }
 
 .calendar-cell.pending-slot {
-  background-color: #fef3c7;
-  color: #b45309;
-  border-color: #fde68a;
+  background-color: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
 }
 
 .calendar-cell.selected {
-  background-color: #2563eb;
-  color: #ffffff;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35) !important;
 }
 
 .calendar-cell.in-range {
-  background-color: #dbeafe;
-  color: #1d4ed8;
-  font-weight: 600;
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+  font-weight: 600 !important;
 }
 
-.calendar-cell.disabled {
-  color: #cbd5e1;
-  cursor: not-allowed;
-  background-color: #f8fafc;
+.calendar-cell.disabled,
+.calendar-cell.past-disabled {
+  color: #cbd5e1 !important;
+  cursor: not-allowed !important;
+  background-color: #f8fafc !important;
+  border-color: transparent !important;
+  pointer-events: none !important;
 }
+
+/* =====================================================================
+   NOTIFICATIONS & PINGS
+   ===================================================================== */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.notification-ping-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+
+.ping-dot-container {
+  position: relative;
+  display: inline-flex;
+  width: 6px;
+  height: 6px;
+}
+
+.ping-dot-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #ef4444;
+  animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.75;
+}
+
+.ping-dot-core {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #dc2626;
+}
+
+.notification-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.notification-card:hover {
+  background-color: #f8fafc !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.notification-card.unread {
+  background: #ffffff !important;
+  border-left: 4px solid #ef4444 !important;
+  border-color: #d4d4d8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Mode Switch Box Segmented Pill Container */
+.mode-switch-box {
+  background-color: #f1f3f5 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 9999px !important;
+  padding: 3px !important;
+}
+
+/* =====================================================================
+   BOOTSTRAP BUTTONS & OVERRIDES
+   ===================================================================== */
+.btn-primary {
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-outline-primary {
+  color: #18181b !important;
+  border-color: #d4d4d8 !important;
+  background-color: #ffffff !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #ffffff !important;
+}
+
+.text-primary {
+  color: #18181b !important;
+}
+
+.border-primary {
+  border-color: #18181b !important;
+}
+
+.spinner-border.text-primary {
+  color: #18181b !important;
+}
+

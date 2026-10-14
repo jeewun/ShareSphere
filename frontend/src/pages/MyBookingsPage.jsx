@@ -1,21 +1,37 @@
 // frontend/src/pages/MyBookingsPage.jsx
 // Implements Module 4: Request and Booking Management (Image 3 Screen 4)
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { 
   CalendarCheck, Clock, CheckCircle2, XCircle, AlertCircle, 
-  Eye, Ban, Check, X, ShieldAlert, ArrowRight 
+  Eye, Ban, Check, X, ShieldAlert, ArrowRight, MessageSquare 
 } from 'lucide-react';
+import HandoverModal from '../components/HandoverModal';
 
 export default function MyBookingsPage() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('my_bookings'); // 'my_bookings' or 'owner_requests'
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(urlTab === 'owner_requests' ? 'owner_requests' : 'my_bookings');
   const [statusFilter, setStatusFilter] = useState('all');
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionMessage, setActionMessage] = useState(null);
+  const [handoverResId, setHandoverResId] = useState(null);
+
+  useEffect(() => {
+    const currentTab = searchParams.get('tab');
+    if (currentTab === 'owner_requests' || currentTab === 'my_bookings') {
+      setActiveTab(currentTab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+    setSearchParams({ tab: tabName });
+  };
 
   useEffect(() => {
     fetchBookings();
@@ -67,7 +83,7 @@ export default function MyBookingsPage() {
   return (
     <div>
       {/* Top Header */}
-      <div className="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+      <div className="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
         <div>
           <h2 className="fw-bold text-dark mb-1">
             {activeTab === 'my_bookings' ? 'My Bookings' : 'Incoming Booking Requests'}
@@ -77,19 +93,29 @@ export default function MyBookingsPage() {
           </p>
         </div>
 
-        {/* Tab Switcher: Student Bookings vs Resource Owner Approvals */}
-        <div className="btn-group shadow-sm">
+        {/* Tab Switcher: Modern Segmented Pill Control */}
+        <div className="mode-switch-box d-inline-flex p-1 bg-white border rounded-pill shadow-sm align-items-center gap-1">
           <button
-            className={`btn btn-sm ${activeTab === 'my_bookings' ? 'btn-primary' : 'btn-outline-secondary'}`}
-            onClick={() => setActiveTab('my_bookings')}
+            className={`btn btn-sm rounded-pill px-3 py-1.5 fw-semibold border-0 ${
+              activeTab === 'my_bookings'
+                ? 'btn-primary shadow-sm'
+                : 'text-secondary bg-transparent'
+            }`}
+            onClick={() => handleTabChange('my_bookings')}
             id="tab-my-bookings"
+            style={{ fontSize: '0.84rem' }}
           >
             My Reservations
           </button>
           <button
-            className={`btn btn-sm ${activeTab === 'owner_requests' ? 'btn-primary' : 'btn-outline-secondary'}`}
-            onClick={() => setActiveTab('owner_requests')}
+            className={`btn btn-sm rounded-pill px-3 py-1.5 fw-semibold border-0 ${
+              activeTab === 'owner_requests'
+                ? 'btn-primary shadow-sm'
+                : 'text-secondary bg-transparent'
+            }`}
+            onClick={() => handleTabChange('owner_requests')}
             id="tab-owner-requests"
+            style={{ fontSize: '0.84rem' }}
           >
             Manage Requests (Owner)
           </button>
@@ -204,6 +230,32 @@ export default function MyBookingsPage() {
                           <Eye size={14} />
                           <span>View</span>
                         </Link>
+                        {/* Approved Handover Coordination Space Button */}
+                        {resv.status === 'approved' && (
+                          <button
+                            type="button"
+                            onClick={() => setHandoverResId(resv.reservation_id)}
+                            className="btn btn-sm btn-primary py-1 px-2 small d-inline-flex align-items-center gap-1 shadow-sm fw-semibold"
+                            title="Open handover & pickup coordination space"
+                            id={`handover-btn-${resv.reservation_id}`}
+                          >
+                            <MessageSquare size={14} />
+                            <span>Coordinate Handover</span>
+                          </button>
+                        )}
+
+                        {resv.status === 'completed' && (
+                          <button
+                            type="button"
+                            onClick={() => setHandoverResId(resv.reservation_id)}
+                            className="btn btn-sm btn-outline-secondary py-1 px-2 small d-inline-flex align-items-center gap-1"
+                            title="View completed handover space"
+                            id={`handover-archived-btn-${resv.reservation_id}`}
+                          >
+                            <MessageSquare size={14} />
+                            <span>Handover Info</span>
+                          </button>
+                        )}
 
                         {/* If in My Bookings tab and status is pending: user can cancel */}
                         {activeTab === 'my_bookings' && resv.status === 'pending' && (
@@ -247,6 +299,15 @@ export default function MyBookingsPage() {
           </div>
         )}
       </div>
+
+      {/* Handover & Pickup Coordination Space Modal */}
+      {handoverResId && (
+        <HandoverModal
+          reservationId={handoverResId}
+          onClose={() => setHandoverResId(null)}
+          onHandoverUpdated={fetchBookings}
+        />
+      )}
     </div>
   );
 }

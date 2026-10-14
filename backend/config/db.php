@@ -92,7 +92,7 @@ class Database {
                 name TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
-                role TEXT CHECK(role IN ('student', 'faculty', 'lab_assistant', 'admin')) DEFAULT 'student',
+                role TEXT DEFAULT 'student',
                 department TEXT DEFAULT 'Information Technology',
                 phone TEXT DEFAULT '+91 98765 43210',
                 avatar TEXT DEFAULT '',
@@ -113,7 +113,7 @@ class Database {
                 title TEXT NOT NULL,
                 description TEXT NOT NULL,
                 specifications TEXT DEFAULT '',
-                condition_status TEXT CHECK(condition_status IN ('New', 'Like New', 'Good', 'Fair')) DEFAULT 'Good',
+                condition_status TEXT CHECK(condition_status IN ('New', 'Good', 'Fair', 'Poor')) DEFAULT 'Good',
                 location TEXT NOT NULL,
                 image_url TEXT NOT NULL,
                 rating REAL DEFAULT 4.8,
@@ -133,9 +133,22 @@ class Database {
                 purpose TEXT DEFAULT '',
                 status TEXT CHECK(status IN ('pending', 'approved', 'rejected', 'cancelled', 'completed')) DEFAULT 'pending',
                 decision_notes TEXT DEFAULT '',
+                pickup_time TEXT DEFAULT '',
+                chat_status TEXT CHECK(chat_status IN ('active', 'closed')) DEFAULT 'active',
+                handover_status TEXT CHECK(handover_status IN ('pending', 'collected', 'returned')) DEFAULT 'pending',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (resource_id) REFERENCES resources(resource_id) ON DELETE CASCADE,
                 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS handover_messages (
+                message_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                reservation_id INTEGER NOT NULL,
+                sender_id INTEGER NOT NULL,
+                message TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) ON DELETE CASCADE,
+                FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS notifications (
@@ -161,7 +174,7 @@ class Database {
                 name VARCHAR(100) NOT NULL,
                 email VARCHAR(120) NOT NULL UNIQUE,
                 password_hash VARCHAR(255) NOT NULL,
-                role ENUM('student', 'faculty', 'lab_assistant', 'admin') DEFAULT 'student',
+                role VARCHAR(50) DEFAULT 'student',
                 department VARCHAR(100) DEFAULT 'Information Technology',
                 phone VARCHAR(30) DEFAULT '+91 98765 43210',
                 avatar VARCHAR(255) DEFAULT '',
@@ -182,7 +195,7 @@ class Database {
                 title VARCHAR(150) NOT NULL,
                 description TEXT NOT NULL,
                 specifications TEXT DEFAULT NULL,
-                condition_status ENUM('New', 'Like New', 'Good', 'Fair') DEFAULT 'Good',
+                condition_status ENUM('New', 'Good', 'Fair', 'Poor') DEFAULT 'Good',
                 location VARCHAR(120) NOT NULL,
                 image_url VARCHAR(255) NOT NULL,
                 rating DECIMAL(2,1) DEFAULT 4.8,
@@ -202,10 +215,23 @@ class Database {
                 purpose TEXT DEFAULT NULL,
                 status ENUM('pending', 'approved', 'rejected', 'cancelled', 'completed') DEFAULT 'pending',
                 decision_notes TEXT DEFAULT NULL,
+                pickup_time VARCHAR(50) DEFAULT NULL,
+                chat_status ENUM('active', 'closed') DEFAULT 'active',
+                handover_status ENUM('pending', 'collected', 'returned') DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (resource_id) REFERENCES resources(resource_id) ON DELETE CASCADE,
                 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
                 INDEX idx_res_dates (resource_id, start_date, end_date, status)
+            ) ENGINE=InnoDB;
+
+            CREATE TABLE IF NOT EXISTS handover_messages (
+                message_id INT AUTO_INCREMENT PRIMARY KEY,
+                reservation_id INT NOT NULL,
+                sender_id INT NOT NULL,
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) ON DELETE CASCADE,
+                FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE
             ) ENGINE=InnoDB;
 
             CREATE TABLE IF NOT EXISTS notifications (

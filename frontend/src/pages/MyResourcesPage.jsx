@@ -339,9 +339,9 @@ export default function MyResourcesPage() {
                         onChange={(e) => setFormData({ ...formData, condition_status: e.target.value })}
                       >
                         <option value="New">New</option>
-                        <option value="Like New">Like New</option>
                         <option value="Good">Good</option>
                         <option value="Fair">Fair</option>
+                        <option value="Poor">Poor</option>
                       </select>
                     </div>
 

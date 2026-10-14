@@ -8,12 +8,12 @@ ShareSphere is a centralized, database-driven web platform designed for colleges
 
 ## 🚀 Key Modules & Standout Features
 
-### 1. Role-Based Access Control & Security
-- **Strict Role Separation**:
-  - **Student / Requester**: Browse items, perform conflict-checked reservations, track booking requests, manage profile and change password.
-  - **Faculty / Resource Owner**: Add and manage listed equipment, approve/reject incoming reservation requests with decision notes.
-  - **Campus Administrator**: Dedicated system-provisioned account. Only administrators have access to the Analytics Dashboard, utilization reports, user management, and campus audit logs.
-- **Account Creation Policy**: Public registration allows creating **Student**, **Faculty**, or **Lab Staff** accounts only. Administrator accounts cannot be created via public registration.
+### 1. Peer-to-Peer Campus Member Access & Security
+- **Campus Member Workflow**:
+  - **Resource Discovery & Booking**: Browse items, perform conflict-checked reservations, track booking requests, manage profile and change password.
+  - **Listing & Owner Management**: Add and manage listed equipment, approve/reject incoming reservation requests with direct coordination notes.
+  - **Direct Coordination Space**: Secure interactive handover channel between requester and resource owner for pickup and return.
+- **Unified Registration**: Simple registration requiring only Name, Email, and Password with instant student/campus membership.
 - **Secure Backend**: PHP sessions, token-based API verification, and bcrypt password hashing (`password_hash`).
 
 ### 2. Intelligent Availability & Conflict Prevention (Core Standout Feature)
@@ -57,4 +57,79 @@ categories (category_id, name, icon, description)
 resources (resource_id, owner_id, category_id, title, description, specifications, condition_status, location, image_url, rating, reviews_count, status, created_at)
 reservations (reservation_id, resource_id, user_id, start_date, end_date, purpose, status, decision_notes, created_at)
 notifications (notification_id, user_id, title, message, type, is_read, link, created_at)
+```
+
+> **MySQL Schema Script**: Available in `backend/database/sharesphere_mysql.sql`.
+> The backend also includes automatic SQLite fallback (`backend/database/sharesphere.sqlite`) with automatic table creation and data seeding.
+
+---
+
+## 🔑 Getting Started Demo Account
+Any registered campus member can log in and explore:
+
+| Name | Email | Password | Access Level |
+|---|---|---|---|
+| Jeevan B | `jeevanb607@gmail.com` | `password123` | Full Campus Sharing, Listing & Reservation Access |
+
+---
+
+## 🏃 Quick Start Guide
+
+### 1. Prerequisites
+- **Node.js** (v18+)
+- **PHP** (v8.0+)
+- **MySQL** (optional — SQLite runs out-of-the-box)
+
+### 2. Start Backend (PHP REST API)
+From the root directory:
+```bash
+php -S 127.0.0.1:8080 -t backend
+```
+Test health check at: `http://127.0.0.1:8080/index.php`
+
+### 3. Start Frontend (React + Vite)
+In a separate terminal:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Open your browser at: `http://localhost:5173`
+
+---
+
+## 📂 Project Structure
+```
+ShareSphere/
+├── backend/
+│   ├── api/
+│   │   ├── auth.php             # Login, register, profile, member session
+│   │   ├── categories.php       # Category listings
+│   │   ├── handover.php         # Coordination channel & direct item handover
+│   │   ├── helpers.php          # Conflict algorithm & JSON response utilities
+│   │   ├── notifications.php    # User notifications
+│   │   ├── reservations.php     # Booking requests, conflict checking, status workflow
+│   │   ├── resources.php        # Resource catalog, filtering, alternatives
+│   │   └── upload.php           # File upload handling
+│   ├── config/
+│   │   ├── cors.php             # CORS headers
+│   │   └── db.php               # PDO database connection (MySQL + SQLite fallback)
+│   ├── database/
+│   │   ├── seed_data.php        # Initial test fixtures & default categories
+│   │   ├── sharesphere.sqlite   # Pre-seeded SQLite database
+│   │   └── sharesphere_mysql.sql# Full MySQL database dump with relational constraints
+│   └── index.php                # API Gateway & health check
+├── frontend/
+│   ├── src/
+│   │   ├── components/          # Reusable UI widgets (Calendar, Badges, Navbar, Handover)
+│   │   ├── context/             # AuthContext & session management
+│   │   ├── pages/               # Module pages (Login, Register, Catalog, Details, Bookings)
+│   │   ├── services/            # API client service layer
+│   │   ├── App.jsx              # Main routing & protected route management
+│   │   ├── index.css            # Custom design system & Bootstrap integration
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js           # Vite config with /api proxy
+├── .gitignore
+└── README.md
 ```

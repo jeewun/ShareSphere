@@ -15,9 +15,9 @@ export default function ConflictBadge({ checking, conflictData, selectedRange })
 
   if (checking) {
     return (
-      <div className="alert alert-info py-3 text-center rounded-3 border-0 bg-primary bg-opacity-10 d-flex align-items-center justify-content-center gap-2">
-        <div className="spinner-border spinner-border-sm text-primary" role="status"></div>
-        <span className="small fw-semibold text-primary">Running backend conflict checks for {selectedRange.startDate} to {selectedRange.endDate}...</span>
+      <div className="alert alert-secondary py-3 text-center rounded-3 border-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center gap-2">
+        <div className="spinner-border spinner-border-sm text-dark" role="status"></div>
+        <span className="small fw-semibold text-dark">Running backend conflict checks for {selectedRange.startDate} to {selectedRange.endDate}...</span>
       </div>
     );
   }

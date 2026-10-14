@@ -58,12 +58,6 @@ export const api = {
         body: JSON.stringify(passData)
       });
       return handleResponse(res);
-    },
-    getUsers: async () => {
-      const res = await fetch(`${API_BASE}/auth.php?action=users`, {
-        headers: { ...getAuthHeader() }
-      });
-      return handleResponse(res);
     }
   },
 
@@ -160,6 +154,48 @@ export const api = {
     }
   },
 
+  // Handover Coordination (Ephemeral Space)
+  handover: {
+    get: async (reservationId) => {
+      const res = await fetch(`${API_BASE}/handover.php?reservation_id=${reservationId}`, {
+        headers: { ...getAuthHeader() }
+      });
+      return handleResponse(res);
+    },
+    sendMessage: async (reservationId, message) => {
+      const res = await fetch(`${API_BASE}/handover.php?action=send_message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reservation_id: reservationId, message })
+      });
+      return handleResponse(res);
+    },
+    updatePickupTime: async (reservationId, pickupTime) => {
+      const res = await fetch(`${API_BASE}/handover.php?action=update_pickup_time`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reservation_id: reservationId, pickup_time: pickupTime })
+      });
+      return handleResponse(res);
+    },
+    closeSpace: async (reservationId) => {
+      const res = await fetch(`${API_BASE}/handover.php?action=close_space`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reservation_id: reservationId })
+      });
+      return handleResponse(res);
+    },
+    reopenSpace: async (reservationId) => {
+      const res = await fetch(`${API_BASE}/handover.php?action=reopen_space`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ reservation_id: reservationId })
+      });
+      return handleResponse(res);
+    }
+  },
+
   // Notifications (Module 4)
   notifications: {
     list: async () => {
@@ -178,16 +214,6 @@ export const api = {
     markRead: async (id) => {
       const res = await fetch(`${API_BASE}/notifications.php?action=mark_read&id=${id}`, {
         method: 'PUT',
-        headers: { ...getAuthHeader() }
-      });
-      return handleResponse(res);
-    }
-  },
-
-  // Analytics & Dashboard (Module 5)
-  analytics: {
-    get: async () => {
-      const res = await fetch(`${API_BASE}/analytics.php`, {
         headers: { ...getAuthHeader() }
       });
       return handleResponse(res);

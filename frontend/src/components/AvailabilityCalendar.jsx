@@ -1,17 +1,19 @@
 // frontend/src/components/AvailabilityCalendar.jsx
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, CheckCircle2, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-export default function AvailabilityCalendar({ bookings = [], onSelectDateRange, selectedRange }) {
+export default function AvailabilityCalendar({ bookings = [], onSelectDateRange, selectedRange, compact = false }) {
   // Calendar state: Year and Month
   const [currentDate, setCurrentDate] = useState(() => {
-    // Default to October 2026 to match image mockup
-    return new Date(2026, 9, 1);
+    return new Date();
   });
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -40,6 +42,11 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
   const getDayStatus = (day) => {
     const dateStr = formatDateStr(year, month, day);
 
+    // Disable past dates
+    if (dateStr < todayStr) {
+      return 'past-disabled';
+    }
+
     // Check if within selectedRange
     if (selectedRange && selectedRange.startDate && selectedRange.endDate) {
       if (dateStr === selectedRange.startDate || dateStr === selectedRange.endDate) {
@@ -64,10 +71,14 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
 
   // Click on a day
   const handleDayClick = (day) => {
-    const status = getDayStatus(day);
-    if (status === 'reserved') return; // Cannot pick reserved slot
-
     const dateStr = formatDateStr(year, month, day);
+    if (dateStr < todayStr) {
+      // Past dates are strictly disabled
+      return;
+    }
+
+    const status = getDayStatus(day);
+    if (status === 'reserved' || status === 'past-disabled') return; // Cannot pick reserved or past slot
 
     if (!selectedRange.startDate || (selectedRange.startDate && selectedRange.endDate)) {
       // Start new selection
@@ -83,111 +94,92 @@ export default function AvailabilityCalendar({ bookings = [], onSelectDateRange,
   };
 
   return (
-    <div className="card-clean p-4" id="availability-calendar-card">
-      <div className="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-        <div className="d-flex align-items-center gap-2">
-          <CalendarIcon className="text-primary" size={22} />
-          <h5 className="fw-bold mb-0">Availability Calendar</h5>
+    <div className={`card-clean ${compact ? 'p-2.5 px-3' : 'p-4'}`} id="availability-calendar-card">
+      {/* Header: Month & Navigation */}
+      <div className={`d-flex align-items-center justify-content-between ${compact ? 'mb-2' : 'mb-3'} flex-wrap gap-2`}>
+        <div className="d-flex align-items-center gap-1.5">
+          <CalendarIcon className="text-primary" size={compact ? 15 : 20} />
+          <span className="fw-bold text-dark" style={{ fontSize: compact ? '0.86rem' : '1.05rem' }}>
+            Availability Calendar
+          </span>
         </div>
-        <div className="d-flex align-items-center gap-2">
-          <button className="btn btn-sm btn-outline-secondary p-1" onClick={prevMonth} aria-label="Previous month">
-            <ChevronLeft size={18} />
+        <div className="d-flex align-items-center gap-1">
+          <button 
+            className="btn btn-sm btn-outline-secondary p-0 px-1 rounded-2" 
+            onClick={prevMonth} 
+            aria-label="Previous month" 
+            title="Previous Month"
+            style={{ height: '24px', lineHeight: '1' }}
+          >
+            <ChevronLeft size={14} />
           </button>
-          <span className="fw-semibold px-2" style={{ minWidth: '130px', textAlign: 'center' }}>
+          <span className="fw-semibold px-1 small text-dark" style={{ minWidth: '95px', textAlign: 'center', fontSize: compact ? '0.78rem' : '0.85rem' }}>
             {monthNames[month]} {year}
           </span>
-          <button className="btn btn-sm btn-outline-secondary p-1" onClick={nextMonth} aria-label="Next month">
-            <ChevronRight size={18} />
+          <button 
+            className="btn btn-sm btn-outline-secondary p-0 px-1 rounded-2" 
+            onClick={nextMonth} 
+            aria-label="Next month" 
+            title="Next Month"
+            style={{ height: '24px', lineHeight: '1' }}
+          >
+            <ChevronRight size={14} />
           </button>
         </div>
       </div>
 
-      <div className="row g-4">
-        {/* Calendar Grid */}
-        <div className="col-lg-8">
-          <div className="calendar-grid mb-3">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-              <div key={d} className="calendar-header-day">
-                {d}
-              </div>
-            ))}
-
-            {/* Empty slots before first day */}
-            {[...Array(firstDayIndex)].map((_, i) => (
-              <div key={`empty-${i}`} className="calendar-cell disabled"></div>
-            ))}
-
-            {/* Month days */}
-            {[...Array(daysInMonth)].map((_, i) => {
-              const day = i + 1;
-              const status = getDayStatus(day);
-              return (
-                <div
-                  key={`day-${day}`}
-                  className={`calendar-cell ${status}`}
-                  onClick={() => handleDayClick(day)}
-                  title={`${monthNames[month]} ${day}: ${status}`}
-                >
-                  {day}
-                </div>
-              );
-            })}
+      {/* Calendar Grid Container */}
+      <div className={compact ? 'calendar-grid-compact' : 'calendar-grid mb-2.5'}>
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+          <div key={d} className="calendar-header-day">
+            {d}
           </div>
+        ))}
 
-          {/* Calendar Legend */}
-          <div className="d-flex align-items-center gap-4 pt-2 border-top flex-wrap" style={{ fontSize: '0.82rem' }}>
-            <div className="d-flex align-items-center gap-2">
-              <span className="rounded-circle border border-secondary" style={{ width: '12px', height: '12px', backgroundColor: '#fff' }}></span>
-              <span className="text-muted">Available</span>
+        {/* Empty slots before first day */}
+        {[...Array(firstDayIndex)].map((_, i) => (
+          <div key={`empty-${i}`} className="calendar-cell disabled"></div>
+        ))}
+
+        {/* Month days */}
+        {[...Array(daysInMonth)].map((_, i) => {
+          const day = i + 1;
+          const status = getDayStatus(day);
+          const isPast = status === 'past-disabled';
+
+          return (
+            <div
+              key={`day-${day}`}
+              className={`calendar-cell ${status}`}
+              onClick={() => handleDayClick(day)}
+              title={isPast ? `${monthNames[month]} ${day}: Past date (unavailable)` : `${monthNames[month]} ${day}: ${status}`}
+            >
+              {day}
             </div>
-            <div className="d-flex align-items-center gap-2">
-              <span className="rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: '#fca5a5' }}></span>
-              <span className="text-muted">Reserved</span>
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <span className="rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: '#fde68a' }}></span>
-              <span className="text-muted">Pending</span>
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <span className="rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: '#2563eb' }}></span>
-              <span className="text-muted">Selected</span>
-            </div>
-          </div>
+          );
+        })}
+      </div>
+
+      {/* Calendar Legend: Reserved (Red), Pending (Yellow), Selected (Blue), Available (White) */}
+      <div 
+        className="d-flex align-items-center justify-content-center gap-3 pt-2 mt-1 border-top flex-wrap" 
+        style={{ fontSize: '0.7rem' }}
+      >
+        <div className="d-flex align-items-center gap-1">
+          <span className="rounded-circle border" style={{ width: '8px', height: '8px', backgroundColor: '#fff', borderColor: '#94a3b8' }}></span>
+          <span className="text-secondary">Available</span>
         </div>
-
-        {/* Upcoming Bookings Panel (Right Side of Screen 6) */}
-        <div className="col-lg-4">
-          <div className="bg-light p-3 rounded-3 h-100 border">
-            <h6 className="fw-bold mb-3 d-flex align-items-center gap-2 text-dark">
-              <Clock size={16} className="text-primary" />
-              <span>Upcoming Bookings</span>
-            </h6>
-
-            {bookings.length === 0 ? (
-              <div className="text-muted small py-3 text-center">
-                No active reservations for this resource. All slots are open.
-              </div>
-            ) : (
-              <div className="d-flex flex-column gap-2">
-                {bookings.map((b) => (
-                  <div key={b.reservation_id} className="p-2 bg-white rounded border shadow-sm">
-                    <div className="d-flex align-items-center justify-content-between mb-1">
-                      <span className="small fw-bold text-dark">
-                        {b.start_date.substring(5)} → {b.end_date.substring(5)}
-                      </span>
-                      <span className={b.status === 'approved' ? 'badge-approved' : 'badge-pending'}>
-                        {b.status === 'approved' ? 'Confirmed' : 'Pending'}
-                      </span>
-                    </div>
-                    <div className="small text-muted d-flex align-items-center gap-1">
-                      <User size={12} />
-                      <span>{b.user_name || 'Campus Student'}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="d-flex align-items-center gap-1">
+          <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: '#ef4444' }}></span>
+          <span className="text-secondary">Reserved</span>
+        </div>
+        <div className="d-flex align-items-center gap-1">
+          <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: '#f59e0b' }}></span>
+          <span className="text-secondary">Pending</span>
+        </div>
+        <div className="d-flex align-items-center gap-1">
+          <span className="rounded-circle" style={{ width: '8px', height: '8px', backgroundColor: '#2563eb' }}></span>
+          <span className="text-secondary">Selected</span>
         </div>
       </div>
     </div>
@@ -200,5 +192,6 @@ AvailabilityCalendar.propTypes = {
   selectedRange: PropTypes.shape({
     startDate: PropTypes.string,
     endDate: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  compact: PropTypes.bool
 };

@@ -1,11 +1,10 @@
-// frontend/src/pages/NotificationsPage.jsx
-// Implements Screen 8: Notifications and Messages
+// frontend/src/pages/NotificationsPage.jsx - Clean White Notifications with Animated Ping
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { 
   Bell, CheckCircle2, XCircle, MessageSquare, 
-  Info, CheckCheck, Clock, ArrowRight 
+  CheckCheck, Clock, ArrowRight 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -58,20 +57,20 @@ export default function NotificationsPage() {
     switch (type) {
       case 'success':
         return (
-          <div className="bg-success text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0">
+          <div className="bg-success text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '36px', height: '36px' }}>
             <CheckCircle2 size={18} />
           </div>
         );
       case 'danger':
         return (
-          <div className="bg-danger text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0">
+          <div className="bg-danger text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '36px', height: '36px' }}>
             <XCircle size={18} />
           </div>
         );
       case 'info':
       default:
         return (
-          <div className="bg-primary text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0">
+          <div className="bg-primary text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: '36px', height: '36px' }}>
             <MessageSquare size={18} />
           </div>
         );
@@ -82,19 +81,14 @@ export default function NotificationsPage() {
     <div>
       {/* Header */}
       <div className="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
-        <div className="d-flex align-items-center gap-3">
-          <div className="bg-primary bg-opacity-10 text-primary p-2 rounded-3">
-            <Bell size={24} />
-          </div>
-          <div>
-            <h2 className="fw-bold text-dark mb-0">Notifications and Messages</h2>
-            <div className="text-muted small">Stay updated on approvals, rejections, and pickup notes.</div>
-          </div>
+        <div>
+          <h2 className="fw-bold text-dark mb-0">Notifications and Messages</h2>
+          <div className="text-muted small">Stay updated on approvals, rejections, and pickup notes.</div>
         </div>
 
         <button
           onClick={handleMarkAllRead}
-          className="btn btn-sm btn-outline-primary d-flex align-items-center gap-2"
+          className="btn btn-sm btn-outline-primary d-flex align-items-center gap-2 px-3 py-1 rounded-3"
           id="mark-all-read-btn"
         >
           <CheckCheck size={16} />
@@ -102,8 +96,8 @@ export default function NotificationsPage() {
         </button>
       </div>
 
-      {/* Notifications List (Image 3 Screen 8) */}
-      <div className="card-clean overflow-hidden p-2">
+      {/* Notifications List Container */}
+      <div className="card-clean p-3 shadow-sm bg-white">
         {loading ? (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status"></div>
@@ -113,33 +107,40 @@ export default function NotificationsPage() {
           <div className="text-center py-5">
             <Bell size={40} className="text-muted mb-2 opacity-50" />
             <h5 className="fw-bold text-dark">No notifications right now</h5>
-            <p className="text-muted small">You will receive alerts here when reservation requests are approved or updated.</p>
+            <p className="text-muted small">You will receive alerts here when reservation requests are updated.</p>
           </div>
         ) : (
-          <div className="d-flex flex-column gap-2 p-2">
+          <div className="d-flex flex-column gap-2">
             {notifications.map((item) => (
               <div
                 key={item.notification_id}
                 onClick={() => handleMarkSingleRead(item.notification_id)}
-                className={`p-3 rounded-3 border d-flex align-items-center justify-content-between gap-3 transition cursor-pointer ${
-                  item.is_read ? 'bg-white' : 'bg-primary bg-opacity-5 border-primary border-opacity-25'
-                }`}
+                className={`notification-card ${!item.is_read ? 'unread' : ''} p-3 d-flex align-items-center justify-content-between gap-3`}
+                role="button"
+                tabIndex={0}
               >
-                <div className="d-flex align-items-center gap-3">
+                <div className="d-flex align-items-start gap-3 flex-grow-1">
                   {getNotificationIcon(item.type)}
-                  <div>
-                    <div className="d-flex align-items-center gap-2 mb-1">
-                      <span className={`small fw-bold ${item.is_read ? 'text-dark' : 'text-primary'}`}>
+                  <div className="flex-grow-1">
+                    <div className="d-flex align-items-center gap-2 flex-wrap">
+                      <span className="fw-bold text-dark small" style={{ fontSize: '0.92rem' }}>
                         {item.title}
                       </span>
+                      {/* Clean Animated Ping Badge for New Unread Notifications */}
                       {!item.is_read && (
-                        <span className="badge bg-primary" style={{ fontSize: '0.65rem' }}>NEW</span>
+                        <span className="notification-ping-pill">
+                          <span className="ping-dot-container">
+                            <span className="ping-dot-pulse"></span>
+                            <span className="ping-dot-core"></span>
+                          </span>
+                          <span>NEW</span>
+                        </span>
                       )}
                     </div>
-                    <div className="small text-secondary mb-1">
+                    <div className="text-secondary small mt-1" style={{ fontSize: '0.86rem', color: '#334155' }}>
                       {item.message}
                     </div>
-                    <div className="text-muted small d-flex align-items-center gap-1" style={{ fontSize: '0.72rem' }}>
+                    <div className="text-muted small mt-1 d-flex align-items-center gap-1" style={{ fontSize: '0.74rem' }}>
                       <Clock size={12} />
                       <span>{item.created_at || 'Just now'}</span>
                     </div>
@@ -148,8 +149,16 @@ export default function NotificationsPage() {
 
                 {item.link && (
                   <Link
-                    to={item.link}
-                    className="btn btn-sm btn-outline-secondary py-1 px-2 d-none d-sm-flex align-items-center gap-1 flex-shrink-0"
+                    to={
+                      item.link.includes('?') 
+                        ? item.link 
+                        : (item.title?.toLowerCase().includes('request') ? '/bookings?tab=owner_requests' : '/bookings?tab=my_bookings')
+                    }
+                    className="btn btn-sm btn-outline-primary py-1 px-3 d-none d-sm-flex align-items-center gap-1 flex-shrink-0 rounded-3"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMarkSingleRead(item.notification_id);
+                    }}
                   >
                     <span>View</span>
                     <ArrowRight size={13} />

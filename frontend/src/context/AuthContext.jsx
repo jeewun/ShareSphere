@@ -1,4 +1,4 @@
-// frontend/src/context/AuthContext.jsx - State Management & Auth Context
+// frontend/src/context/AuthContext.jsx - Professional Authentication State Management
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
 
@@ -10,9 +10,9 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
-  // Initialize user session on mount
+  // Initialize and verify user session on mount
   useEffect(() => {
-    async function loadUser() {
+    async function verifySession() {
       if (token) {
         try {
           const res = await api.auth.getMe();
@@ -23,50 +23,73 @@ export function AuthProvider({ children }) {
             logout();
           }
         } catch (err) {
-          console.warn('Session verification failed, resetting token', err);
+          console.warn('Session verification failed, logging out:', err);
           logout();
         }
       } else {
-        // Auto-login with default demo student user (Alex Carter) for seamless grading/demo
-        quickLoginDemo('alex@example.com', 'password123');
+        setUser(null);
       }
       setLoading(false);
     }
-    loadUser();
+    verifySession();
   }, [token]);
 
   async function fetchNotificationCount() {
+    if (!token) return;
     try {
       const res = await api.notifications.list();
       if (res.success) {
         setUnreadNotifications(res.unread_count || 0);
       }
-    } catch (err) {
+    } catch {
       // ignore
     }
   }
 
+  // Auto-poll notifications every 8 seconds & on tab focus when logged in
+  useEffect(() => {
+    if (!token || !user) return;
+
+    fetchNotificationCount();
+    const interval = setInterval(fetchNotificationCount, 8000);
+
+    const handleFocus = () => {
+      fetchNotificationCount();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleFocus);
+    };
+  }, [token, user]);
+
+  // Real Email & Password Login
   const login = async (email, password) => {
     const res = await api.auth.login({ email, password });
-    if (res.success) {
+    if (res.success && res.token) {
       localStorage.setItem('sharesphere_token', res.token);
       setToken(res.token);
       setUser(res.user);
       fetchNotificationCount();
       return res;
     }
-    throw new Error(res.error || 'Login failed');
+    throw new Error(res.error || res.message || 'Invalid credentials');
   };
 
+  // Real User Registration
   const register = async (userData) => {
     const res = await api.auth.register(userData);
-    if (res.success) {
+    if (res.success && res.token) {
       localStorage.setItem('sharesphere_token', res.token);
       setToken(res.token);
       setUser(res.user);
       return res;
     }
-    throw new Error(res.error || 'Registration failed');
+    throw new Error(res.error || res.message || 'Registration failed');
   };
 
   const logout = () => {
@@ -80,20 +103,6 @@ export function AuthProvider({ children }) {
     setUser(prev => ({ ...prev, ...updatedUser }));
   };
 
-  const quickLoginDemo = async (email, password) => {
-    try {
-      const res = await api.auth.login({ email, password });
-      if (res.success) {
-        localStorage.setItem('sharesphere_token', res.token);
-        setToken(res.token);
-        setUser(res.user);
-        fetchNotificationCount();
-      }
-    } catch (e) {
-      console.warn('Quick login demo failed', e);
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -102,12 +111,10 @@ export function AuthProvider({ children }) {
         loading,
         unreadNotifications,
         isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin',
         login,
         register,
         logout,
         updateUser,
-        quickLoginDemo,
         refreshNotifications: fetchNotificationCount
       }}
     >

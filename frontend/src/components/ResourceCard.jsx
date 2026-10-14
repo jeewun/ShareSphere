@@ -1,7 +1,7 @@
 // frontend/src/components/ResourceCard.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Star, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight } from 'lucide-react';
 import PropTypes from 'prop-types';
 
 export default function ResourceCard({ resource }) {
@@ -11,8 +11,6 @@ export default function ResourceCard({ resource }) {
     category_name,
     location,
     image_url,
-    rating,
-    reviews_count,
     status,
     owner_name
   } = resource;
@@ -41,29 +39,12 @@ export default function ResourceCard({ resource }) {
       {/* Details Box */}
       <div className="p-3 d-flex flex-column flex-grow-1 justify-content-between">
         <div>
-          <h5 className="fw-bold mb-1 text-truncate text-dark" title={title} style={{ fontSize: '1.02rem' }}>
+          <h5 className="fw-bold mb-1 text-truncate text-dark" title={title} style={{ fontSize: '0.96rem' }}>
             {title}
           </h5>
 
-          {/* Rating */}
-          <div className="d-flex align-items-center gap-1 mb-2">
-            <div className="d-flex text-warning">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={13}
-                  fill={i < Math.floor(rating || 4.5) ? 'currentColor' : 'none'}
-                  stroke="currentColor"
-                />
-              ))}
-            </div>
-            <span className="small text-muted fw-semibold" style={{ fontSize: '0.78rem' }}>
-              ({reviews_count || 10})
-            </span>
-          </div>
-
           {/* Location */}
-          <div className="d-flex align-items-center text-muted small mb-2 gap-1" style={{ fontSize: '0.82rem' }}>
+          <div className="d-flex align-items-center text-muted small mb-2 gap-1" style={{ fontSize: '0.8rem' }}>
             <MapPin size={13} className="text-secondary flex-shrink-0" />
             <span className="text-truncate">{location}</span>
           </div>
@@ -73,7 +54,7 @@ export default function ResourceCard({ resource }) {
             <span className={isAvailable ? 'badge-available' : 'badge-rejected'}>
               {isAvailable ? 'Available' : 'Reserved'}
             </span>
-            <span className="small text-muted" style={{ fontSize: '0.75rem' }}>
+            <span className="small text-muted" style={{ fontSize: '0.74rem' }}>
               By: <span className="fw-semibold text-dark">{owner_name?.split(' ')[0] || 'Campus'}</span>
             </span>
           </div>
@@ -82,11 +63,12 @@ export default function ResourceCard({ resource }) {
         {/* View Details Action */}
         <Link
           to={`/resources/${resource_id}`}
-          className="btn btn-blue w-100 d-flex align-items-center justify-content-center gap-2 mt-2"
+          className="btn btn-blue btn-sm py-1.5 w-100 d-flex align-items-center justify-content-center gap-1.5 mt-1"
           id={`view-details-btn-${resource_id}`}
+          style={{ fontSize: '0.84rem' }}
         >
           <span>View Details</span>
-          <ArrowRight size={14} />
+          <ArrowRight size={13} />
         </Link>
       </div>
     </article>

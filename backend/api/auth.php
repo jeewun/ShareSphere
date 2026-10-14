@@ -59,12 +59,7 @@ if ($method === 'POST') {
             sendError('Passwords do not match.');
         }
 
-        // Only normal student/staff roles can be created through public registration
-        // Administrator accounts are strictly system-provisioned for security
-        $allowedRoles = ['student', 'faculty', 'lab_assistant'];
-        if (!in_array($role, $allowedRoles) || $role === 'admin') {
-            $role = 'student';
-        }
+        $role = 'student';
 
         // Check if email already registered
         $check = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
@@ -73,9 +68,10 @@ if ($method === 'POST') {
             sendError('This email is already registered. Please login.', 409);
         }
 
-        // Hash password securely (Unit-III PHP Password Hashing)
+        // Secure password hashing
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
-        $avatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80';
+        // Default avatar is empty unless explicitly uploaded by user
+        $avatar = '';
 
         $insert = $pdo->prepare("INSERT INTO users (name, email, password_hash, role, department, avatar) VALUES (?, ?, ?, ?, ?, ?)");
         $insert->execute([$name, $email, $passwordHash, $role, $department, $avatar]);
@@ -159,12 +155,6 @@ if ($method === 'GET') {
             sendError('Not authenticated', 401);
         }
         sendResponse(['user' => $user]);
-    }
-
-    if ($action === 'users') {
-        // List users for admin
-        $stmt = $pdo->query("SELECT user_id, name, email, role, department, phone, avatar, created_at FROM users ORDER BY user_id DESC");
-        sendResponse(['users' => $stmt->fetchAll()]);
     }
 }
 

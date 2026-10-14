@@ -14,10 +14,10 @@ export default function ProfilePage() {
   // Profile Edit State
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: user?.name || 'Alex Carter',
+    name: user?.name || '',
     department: user?.department || 'Information Technology',
-    phone: user?.phone || '+91 98765 43210',
-    avatar: user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'
+    phone: user?.phone || '',
+    avatar: user?.avatar || ''
   });
 
   // Password State
@@ -68,6 +68,17 @@ export default function ProfilePage() {
     }
   };
 
+  const formatMemberSince = (dateStr) => {
+    if (!dateStr) {
+      return `Member Since ${new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+    }
+    const d = new Date(dateStr.includes('T') ? dateStr : dateStr.replace(' ', 'T'));
+    if (isNaN(d.getTime())) {
+      return `Member Since ${new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+    }
+    return `Member Since ${d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+  };
+
   return (
     <div>
       <div className="mb-4">
@@ -82,33 +93,42 @@ export default function ProfilePage() {
         <div className="col-lg-4">
           <div className="card-clean p-4 text-center">
             <div className="position-relative d-inline-block mb-3">
-              <img
-                src={profileData.avatar}
-                alt={user?.name || 'User'}
-                className="rounded-circle border border-4 border-light shadow"
-                style={{ width: '130px', height: '130px', objectFit: 'cover' }}
-              />
-              <span className="position-absolute bottom-0 end-0 badge bg-primary rounded-circle p-2 border border-2 border-white shadow">
+              {profileData.avatar ? (
+                <img
+                  src={profileData.avatar}
+                  alt={user?.name || 'User'}
+                  className="rounded-circle border border-4 border-light shadow"
+                  style={{ width: '130px', height: '130px', objectFit: 'cover' }}
+                />
+              ) : (
+                <div
+                  className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow mx-auto"
+                  style={{ width: '130px', height: '130px', fontSize: '2.5rem' }}
+                >
+                  {user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : <User size={48} />}
+                </div>
+              )}
+              <span className="position-absolute bottom-0 end-0 badge bg-dark rounded-circle p-2 border border-2 border-white shadow">
                 <Shield size={14} />
               </span>
             </div>
 
-            <h4 className="fw-bold text-dark mb-1">{user?.name || 'Alex Carter'}</h4>
-            <div className="text-muted small mb-2">{user?.email || 'alex@example.com'}</div>
+            <h4 className="fw-bold text-dark mb-1">{user?.name || 'User'}</h4>
+            <div className="text-muted small mb-2">{user?.email || ''}</div>
 
             <div className="d-inline-flex gap-2 mb-3">
-              <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-1 text-capitalize">
-                {user?.role || 'Student'}
+              <span className="badge bg-light text-dark border px-3 py-1">
+                Campus Member
               </span>
               <span className="badge bg-secondary bg-opacity-10 text-secondary border px-3 py-1">
-                Member Since Aug 2025
+                {formatMemberSince(user?.created_at)}
               </span>
             </div>
 
             <div className="pt-3 border-top mt-2">
               <button
                 type="button"
-                className="btn btn-outline-primary btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
+                className="btn btn-outline-dark btn-sm w-100 d-flex align-items-center justify-content-center gap-2"
                 onClick={() => setIsEditing(!isEditing)}
                 id="edit-profile-toggle-btn"
               >
@@ -191,8 +211,8 @@ export default function ProfilePage() {
                   <div className="fw-semibold text-dark">{user?.email}</div>
                 </div>
                 <div className="col-sm-6">
-                  <div className="text-muted small">Academic Role</div>
-                  <div className="fw-semibold text-dark text-capitalize">{user?.role}</div>
+                  <div className="text-muted small">Membership Status</div>
+                  <div className="fw-semibold text-dark">Active Campus Member</div>
                 </div>
                 <div className="col-sm-6">
                   <div className="text-muted small">Department</div>

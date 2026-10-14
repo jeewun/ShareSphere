@@ -195,7 +195,7 @@ if ($method === 'PUT') {
         sendError('Missing resource ID', 400);
     }
 
-    // Check ownership or admin
+    // Check ownership
     $check = $pdo->prepare("SELECT owner_id FROM resources WHERE resource_id = ?");
     $check->execute([$id]);
     $existing = $check->fetch();
@@ -203,7 +203,7 @@ if ($method === 'PUT') {
         sendError('Resource not found', 404);
     }
 
-    if ($existing['owner_id'] != $user['user_id'] && $user['role'] !== 'admin') {
+    if ($existing['owner_id'] != $user['user_id']) {
         sendError('Forbidden: You can only edit your own resources', 403);
     }
 
@@ -241,7 +241,7 @@ if ($method === 'DELETE') {
         sendError('Resource not found', 404);
     }
 
-    if ($existing['owner_id'] != $user['user_id'] && $user['role'] !== 'admin') {
+    if ($existing['owner_id'] != $user['user_id']) {
         sendError('Forbidden: You cannot delete this resource', 403);
     }
 

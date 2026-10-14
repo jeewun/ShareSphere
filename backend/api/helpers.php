@@ -41,7 +41,7 @@ function getCurrentUser($pdo) {
         return null;
     }
 
-    $stmt = $pdo->prepare("SELECT user_id, name, email, role, department, phone, avatar FROM users WHERE user_id = ?");
+    $stmt = $pdo->prepare("SELECT user_id, name, email, role, department, phone, avatar, created_at FROM users WHERE user_id = ?");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
     return $user ?: null;

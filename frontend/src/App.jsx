@@ -1,7 +1,7 @@
-// frontend/src/App.jsx
+// frontend/src/App.jsx - Professional Route Management & Session Security
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter, Routes, Route, useLocation, Navigate, Link } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
@@ -10,47 +10,37 @@ import ResourcesPage from './pages/ResourcesPage';
 import ResourceDetailPage from './pages/ResourceDetailPage';
 import MyBookingsPage from './pages/MyBookingsPage';
 import MyResourcesPage from './pages/MyResourcesPage';
-import AdminDashboardPage from './pages/AdminDashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
-import { useAuth } from './context/AuthContext';
-import { ShieldAlert, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+function AppLayout() {
+  const location = useLocation();
+  const { user, loading } = useAuth();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
-function AdminGuard({ children }) {
-  const { user, isAdmin } = useAuth();
-
-  if (!isAdmin) {
+  // Show clean spinner while verifying session
+  if (loading) {
     return (
-      <div className="card-clean p-5 text-center my-5 mx-auto" style={{ maxWidth: '600px' }}>
-        <div className="bg-danger bg-opacity-10 text-danger p-3 rounded-circle d-inline-flex mb-3">
-          <ShieldAlert size={42} />
-        </div>
-        <h3 className="fw-bold text-dark mb-2">Access Denied</h3>
-        <p className="text-muted small mb-3">
-          Administrator privileges are required to view the Analytics Dashboard and Utilization Reports.
-        </p>
-        <div className="p-3 bg-light rounded-3 text-secondary small mb-4 border">
-          Current User: <strong>{user?.name || 'Anonymous'}</strong> · Role: <span className="badge bg-secondary text-capitalize">{user?.role || 'Guest'}</span>
-        </div>
-        <Link to="/" className="btn btn-primary d-inline-flex align-items-center gap-2">
-          <ArrowLeft size={16} />
-          <span>Return to Dashboard</span>
-        </Link>
+      <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light">
+        <div className="spinner-border text-primary mb-2" role="status"></div>
+        <div className="text-muted small fw-semibold">Loading ShareSphere...</div>
       </div>
     );
   }
 
-  return children;
-}
+  // If user is already authenticated and visits /login or /register, redirect to dashboard
+  if (user && isAuthPage) {
+    return <Navigate to="/" replace />;
+  }
 
-function AppLayout() {
-  const location = useLocation();
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  // If user is NOT authenticated and visits any internal page, redirect to /login
+  if (!user && !isAuthPage) {
+    return <Navigate to="/login" replace />;
+  }
 
+  // Render Authentication Pages
   if (isAuthPage) {
     return (
       <Routes>
@@ -60,6 +50,7 @@ function AppLayout() {
     );
   }
 
+  // Render Authenticated Main Application
   return (
     <div className="min-vh-100 d-flex flex-column">
       <Navbar />
@@ -74,16 +65,9 @@ function AppLayout() {
             <Route path="/resources/:id" element={<ResourceDetailPage />} />
             <Route path="/bookings" element={<MyBookingsPage />} />
             <Route path="/my-resources" element={<MyResourcesPage />} />
-            <Route
-              path="/admin"
-              element={
-                <AdminGuard>
-                  <AdminDashboardPage />
-                </AdminGuard>
-              }
-            />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>

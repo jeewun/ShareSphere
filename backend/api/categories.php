@@ -17,8 +17,8 @@ if ($method === 'GET') {
 
 if ($method === 'POST') {
     $user = getCurrentUser($pdo);
-    if (!$user || !in_array($user['role'], ['admin', 'faculty', 'lab_assistant'])) {
-        sendError('Forbidden: Admin/Staff only', 403);
+    if (!$user) {
+        sendError('Unauthorized', 401);
     }
 
     $data = getJsonBody();
